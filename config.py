@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 
-class config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key')
+load_dotenv()
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///f1nsight.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

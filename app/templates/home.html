@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <!-- HERO SECTION -->
+    <div class="hero-section">
+        <h1 class="main-title">f1nsight</h1>
+        <p class="subtitle">a flask website for all your f1 data needs</p>
+        
+        <div class="auth-buttons">
+            <a href="{{ url_for('auth.login') }}" class="btn waves-effect waves-light">
+                <span class="material-symbols-rounded">login</span>
+                login
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="btn waves-effect waves-light">
+                <span class="material-symbols-rounded">person_add</span>
+                register
+            </a>
+        </div>
+
+        <!-- SCROLL INDICATOR -->
+        <div class="scroll-indicator">
+            <span class="material-symbols-rounded pulse">expand_more</span>
+        </div>
+    </div>
+
+    <!-- CONTENT SECTIONS -->
+    <div class="info-section">
+        <h2>what is f1nsight?</h2>
+        <p>f1nsight is a data archive and dashboard for f1 enthusiasts built on a secure architecture, and supported by flask</p>
+    </div>
+
+    <div class="info-section">
+        <h2>features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="material-symbols-rounded">analytics</span>
+                <h3>data analysis</h3>
+                <p>compare and contrast a range of data</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">speed</span>
+                <h3>live updates</h3>
+                <p>recieve live updates and news</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">history</span>
+                <h3>historical data</h3>
+                <p>access the world of formula 1</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

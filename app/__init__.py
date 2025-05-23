@@ -1,30 +1,27 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf import CSRFProtect
-from config import config
+from flask_migrate import Migrate
+from config import Config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-csrf = CSRFProtect()
+login_manager.login_message = ''
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(config)
+    app.config.from_object(Config)
 
     db.init_app(app)
     login_manager.init_app(app)
-    csrf.init_app(app)
 
     login_manager.login_view = 'auth.login'
 
-    from app.routes.dashboard import dashboard_bp
-    app.register_blueprint(dashboard_bp)
-
-    from app.models.user import User
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+    # REGISTER BLUEPRINTS WITH PROPER URL PREFIXES
+    from app.routes import auth, dashboard, home
+    app.register_blueprint(home.bp)
+    app.register_blueprint(auth.bp, url_prefix='/auth') 
+    app.register_blueprint(dashboard.bp, url_prefix='/dashboard')
 
     return app

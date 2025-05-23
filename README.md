@@ -12,11 +12,10 @@
     </summary>
   </ul>
 </div>
-
 <div id="user-content-toc">
   <ul align="center" style="list-style: none;">
     <summary>
-      <h2>flask website for all your f1 data needs</h2>
+      <h2>a flask website for all your f1 data needs</h2>
     </summary>
   </ul>
 </div>

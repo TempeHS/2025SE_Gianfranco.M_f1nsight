@@ -1,0 +1,382 @@
+:root {
+  /* COLOUR PALETTE FOR CATPPUCCIN MOCHA */
+  --rosewater: #f5e0dc;
+  --flamingo: #f2cdcd;
+  --pink: #f5c2e7;
+  --mauve: #cba6f7;
+  --red: #f38ba8;
+  --maroon: #eba0ac;
+  --peach: #fab387;
+  --yellow: #f9e2af;
+  --green: #a6e3a1;
+  --teal: #94e2d5;
+  --sky: #89dceb;
+  --sapphire: #74c7ec;
+  --blue: #89b4fa;
+  --lavender: #b4befe;
+  --text: #cdd6f4;
+  --subtext1: #bac2de;
+  --subtext0: #a6adc8;
+  --overlay2: #9399b2;
+  --overlay1: #7f849c;
+  --overlay0: #6c7086;
+  --surface2: #585b70;
+  --surface1: #45475a;
+  --surface0: #313244;
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --crust: #11111b;
+}
+
+body {
+  background-color: var(--base);
+  color: var(--text);
+  font-family: "Fira Code", monospace;
+}
+
+/* NAVBAR STYLES */
+.nav-wrapper {
+  background-color: var(--mantle) !important;
+}
+
+/* FOR NAVBAR CENTERING BECAUSE ISSUE*/
+.nav-wrapper ul li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: none;
+}
+
+.nav-wrapper .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-wrapper .material-symbols-rounded {
+    font-size: 24px;
+    line-height: inherit;
+    margin: 0;
+}
+
+/* SIDENAV STYLES */
+.sidenav {
+    background-color: var(--mantle);
+}
+
+.sidenav li > a {
+    color: var(--text) !important;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    text-transform: none;
+}
+
+.sidenav li > a:hover {
+    background-color: var(--surface0);
+}
+
+.sidenav li > a .material-symbols-rounded {
+    color: var(--text);
+    margin: 0 !important;
+}
+
+.sidenav .brand-logo {
+    padding: 0 32px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+}
+
+/* CARD STYLES */
+.card {
+  background-color: var(--mantle);
+  border-radius: 16px 16px 24px 24px;
+  margin-top: 3rem; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.card .card-content {
+  color: var(--text);
+}
+
+.card .card-action {
+  border-radius: 0 0 24px 24px; 
+  background-color: var(--mantle);
+  padding: 16px 24px;
+}
+
+.card .card-action a {
+  text-transform: none !important;
+  color: var(--mauve) !important;
+  transition: color 0.2s ease;
+}
+
+.card .card-action a:hover {
+  color: var(--pink) !important;
+}
+
+/* BUTTON STYLES */
+.btn {
+    background-color: var(--mauve);
+    border-radius: 20px;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn .material-symbols-rounded {
+    margin: 0;
+    line-height: inherit;
+}
+
+.btn:hover {
+  background-color: var(--lavender);
+}
+
+.input-field input {
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--overlay0) !important;
+}
+
+.input-field input:focus {
+  border-bottom: 1px solid var(--mauve) !important;
+  box-shadow: 0 1px 0 0 var(--mauve) !important;
+}
+
+/* INPUT FIELD STYLES */
+.input-field label {
+  color: var(--overlay1) !important;
+}
+
+.input-field input:focus + label {
+  color: var(--mauve) !important;
+}
+
+.card-panel.red {
+  background-color: var(--red) !important;
+  color: var(--base);
+}
+
+/* LOGIN CARD STYLES */
+.login-card {
+    background-color: var(--base) !important;
+    box-shadow: none !important;
+}
+
+.login-card .card-content {
+    padding: 24px 0;
+}
+
+.login-card .card-action {
+    background-color: var(--base) !important;
+    border-top: none;
+    padding: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-card .card-action .material-symbols-rounded {
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* REGISTRATION CARD STYLES */
+.reg-card {
+    background-color: var(--base) !important;
+    box-shadow: none !important;
+}
+
+.reg-card .card-content {
+    padding: 24px 0;
+}
+
+.reg-card .card-action {
+    background-color: var(--base) !important;
+    border-top: none;
+    padding: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reg-card .card-action .material-symbols-rounded {
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* INPUT HELPER TEXT */
+.helper-text {
+    color: var(--overlay1) !important;
+    font-size: 0.8rem;
+    position: absolute;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    background-color: var(--surface0);
+    padding: 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.input-field {
+    position: relative;
+}
+
+.input-field:hover .helper-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* MESSAGE PANEL STYLES */
+.card-panel.message-panel {
+    background-color: var(--surface0);
+    color: var(--text);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.message-panel .material-symbols-rounded {
+    color: var(--sapphire);
+}
+
+/* HOME PAGE STYLES */
+.home-container {
+    text-align: center;
+}
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.main-title {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--mauve);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--text);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 4rem;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+}
+
+.scroll-indicator .material-symbols-rounded {
+    font-size: 3rem;
+    color: var(--overlay1);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
+}
+
+.info-section {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+}
+
+.info-section h2 {
+    color: var(--mauve);
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.feature-card {
+    background-color: var(--mantle);
+    padding: 2rem;
+    border-radius: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card .material-symbols-rounded {
+    font-size: 3rem;
+    color: var(--blue);
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: var(--mauve);
+    margin-bottom: 1rem;
+}
+
+/* STANDINGS TABLE STYLES */
+.striped {
+    background-color: var(--surface0);
+}
+
+.striped tbody tr:nth-child(odd) {
+    background-color: var(--surface1);
+}
+
+.striped tbody tr:hover {
+    background-color: var(--surface2);
+}
+
+.card-title {
+    color: var(--mauve);
+    margin-bottom: 1.5rem;
+}
+
+/* FOR MOBILE NERDS */
+@media only screen and (max-width: 600px) {
+  .card {
+    margin-top: 2rem;
+  }
+  .main-title {
+      font-size: 3rem;
+  }
+  
+  .auth-buttons {
+      flex-direction: column;
+  }
+  
+  .features-grid {
+      grid-template-columns: 1fr;
+  }
+}
