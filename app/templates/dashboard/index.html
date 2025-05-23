@@ -5,7 +5,19 @@
     <div class="col s12">
         <div class="card">
             <div class="card-content">
-                <span class="card-title">Driver Standings</span>
+                <div class="card-title-wrapper">
+                    <span class="card-title">Driver Standings</span>
+                    <div class="input-field season-select">
+                        <select onchange="window.location.href='?year=' + this.value">
+                            {% for year in available_seasons %}
+                            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
+                                {{ year }} Season
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <label>Select Season</label>
+                    </div>
+                </div>
                 <table class="striped">
                     <thead>
                         <tr>
@@ -19,8 +31,14 @@
                         {% for driver in standings %}
                         <tr>
                             <td>{{ driver.position }}</td>
-                            <td>{{ driver.driver }}</td>
-                            <td>{{ driver.constructor }}</td>
+                            <td>
+                            <img class="driver-number" src="{{ url_for('dashboard.driver_number_icon', driver_name=driver.driver) }}" alt="{{ driver.driver }} number">                            {{ driver.constructor }}
+                            {{ driver.driver }}
+                            </td>
+                            <td>
+                            <img class="constructor-icon" src="{{ url_for('static', filename='icons/' ~ driver.constructor ~ '/badge.png') }}" alt="{{ driver.constructor }} logo">
+                            {{ driver.constructor }}
+                            </td>
                             <td>{{ driver.points }}</td>
                         </tr>
                         {% endfor %}
@@ -30,4 +48,11 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+});
+</script>
 {% endblock %}
