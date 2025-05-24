@@ -32,34 +32,157 @@ body {
   background-color: var(--base);
   color: var(--text);
   font-family: "Fira Code", monospace;
+  margin-left: 240px; /* Match sidebar width */
+  transition: margin-left 0.3s ease;
 }
 
-/* NAVBAR STYLES */
-.nav-wrapper {
-  background-color: var(--mantle) !important;
+body.sidebar-collapsed {
+    margin-left: 64px;
 }
 
-/* FOR NAVBAR CENTERING BECAUSE ISSUE*/
-.nav-wrapper ul li a {
+/* SIDEBAR STYLES */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+    transition: width 0.3s ease;
+    width: 240px;
+}
+
+.sidebar-container.collapsed {
+    width: 64px;
+}
+
+.sidebar {
+    background-color: var(--mantle);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 16px 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    text-transform: none;
+    position: relative;
+    border-bottom: 1px solid var(--surface0);
+    height: 64px;
 }
 
-.nav-wrapper .brand-logo {
+.sidebar .brand-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    color: var(--text);
+    text-decoration: none;
+    padding-left: 12px;
+    padding-right: 48px;
+    width: 100%;
 }
 
-.nav-wrapper .material-symbols-rounded {
-    font-size: 24px;
-    line-height: inherit;
+.sidebar .brand-text {
+    font-size: 1.2rem;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-container.collapsed .brand-text,
+.sidebar-container.collapsed .nav-text {
+    opacity: 0;
+    width: 0;
+}
+
+.sidebar-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--surface0);
+}
+
+.sidebar-toggle .material-symbols-rounded {
+    transition: transform 0.3s ease;
+}
+
+.sidebar-container.collapsed .sidebar-toggle .material-symbols-rounded {
+    transform: rotate(180deg);
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
-/* SIDENAV STYLES */
+.sidebar-nav li {
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-nav .nav-spacer {
+    flex: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.sidebar-nav a:hover {
+    background-color: var(--surface0);
+}
+
+.sidebar-nav .material-symbols-rounded {
+    font-size: 24px;
+    width: 24px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    body {
+        margin-left: 0;
+    }
+    
+    .sidebar-container {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar-container.mobile-visible {
+        transform: translateX(0);
+    }
+}
+
+/* OLD STYLES REMOVED */
 .sidenav {
     background-color: var(--mantle);
 }
@@ -389,6 +512,101 @@ body {
     margin-right: 8px;
 }
 
+/* SEASON SELECT STYLES */
+.card-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.season-select {
+    position: relative;
+    min-width: 180px;
+}
+
+.season-dropdown-header {
+    background-color: var(--base);
+    border: 1px solid var(--overlay0);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Fira Code", monospace;
+    padding: 8px 36px 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.season-dropdown-content {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--base);
+    border: 1px solid var(--overlay0);
+    border-radius: 8px;
+    margin-top: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.season-dropdown-content.show {
+    pointer-events: auto;
+}
+
+.season-option {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.season-option:hover {
+    background-color: var(--surface1);
+}
+
+.season-option.selected {
+    background-color: var(--surface1);
+    color: var (--mauve);
+}
+
+.season-dropdown-icon {
+    position: absolute;
+    right: 8px;
+    transition: transform 0.2s ease;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.collapse-toggle {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.collapse-toggle:hover {
+    color: var(--mauve);
+}
+
+.collapse-toggle .material-symbols-rounded {
+    font-size: 24px;
+    transition: transform 0.2s ease;
+}
 
 /* FOR MOBILE NERDS */
 @media only screen and (max-width: 600px) {
@@ -406,4 +624,60 @@ body {
   .features-grid {
       grid-template-columns: 1fr;
   }
+
+  .standings-container {
+        flex-direction: column;
+  }
+    
+  .standings-container .col {
+        padding: 0;
+  }
+}
+
+
+/* STANDINGS TABLE STYLES */
+.standings-table {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--overlay0) var(--base);
+}
+
+.standings-table::-webkit-scrollbar {
+    width: 8px;
+}
+
+.standings-table::-webkit-scrollbar-track {
+    background: var(--base);
+}
+
+.standings-table::-webkit-scrollbar-thumb {
+    background-color: var(--overlay0);
+    border-radius: 4px;
+}
+
+.standings-table table {
+    margin-bottom: 0;
+}
+
+/* STANDINGS LAYOUT STYLES */
+.standings-container {
+    display: flex;
+    gap: 1rem;
+    padding-left: 2rem;
+    margin-right: 0;
+}
+
+.standings-container .col {
+    padding-right: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+    .standings-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .standings-container .col {
+        padding-right: 0;
+    }
 }

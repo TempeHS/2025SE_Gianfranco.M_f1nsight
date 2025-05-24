@@ -1,0 +1,89 @@
+@keyframes dropdownOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dropdownClose {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.dropdown-animate {
+    animation: dropdownClose 0.2s ease forwards;
+}
+
+.dropdown-animate.show {
+    animation: dropdownOpen 0.2s ease forwards;
+}
+
+@keyframes collapseTable {
+    from {
+        max-height: 2000px;
+        opacity: 1;
+    }
+    to {
+        max-height: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes expandTable {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 2000px;
+        opacity: 1;
+    }
+}
+
+.standings-table {
+    overflow: hidden;
+    max-height: 2000px;
+    opacity: 1;
+    transition: all 0.4s ease-in-out;
+}
+
+.standings-table.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+@keyframes sidebarSlideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes sidebarSlideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.sidebar-animate-in {
+    animation: sidebarSlideIn 0.3s ease forwards;
+}
+
+.sidebar-animate-out {
+    animation: sidebarSlideOut 0.3s ease forwards;
+}
