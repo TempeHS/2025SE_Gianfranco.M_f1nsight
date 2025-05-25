@@ -46,6 +46,9 @@ f1nsight will serve as a data archive and dashboard for f1 enthusiasts built on 
 git clone https://github.com/TempeHS/2025SE_Gianfranco.M_f1nsight
 ``` 
 ```
+source .venv/bin/activate
+```
+```
 pip install -r requirements.txt
 ```
 ```
