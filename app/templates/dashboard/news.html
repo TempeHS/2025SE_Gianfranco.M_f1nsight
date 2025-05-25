@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- FILTER SECTION -->
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title" style="text-transform: lowercase; color: var(--mauve);">formula 1 news</span>
+                    <form id="filterForm">
+                        <div class="input-field" style="width: 250px;">
+                            <select name="sources" multiple>
+                                <option value="" disabled style="text-transform: lowercase;">choose news source</option>
+                                {% for source in sources %}
+                                <option value="{{ source.id }}" {% if source.id in selected_sources %}selected{% endif %}>
+                                    {{ source.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button class="btn waves-effect waves-light" type="submit" style="background-color: var(--mauve); margin-top: 16px;">
+                            <span style="text-transform: lowercase; color: var(--base);">apply filters</span>
+                            <i class="material-symbols-rounded right" style="color: var(--base);">filter_list</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWS GRID -->
+    <div id="newsGrid" class="row">
+        {% if news %}
+            {% for article in news %}
+            <div class="col s12 m6 l3">
+                <div class="card hoverable" style="height: 550px; display: flex; flex-direction: column;">
+                    {% if article.urlToImage %}
+                    <div class="card-image" style="height: 350px; overflow: hidden;">
+                        <img src="{{ article.urlToImage }}" alt="{{ article.title }}" 
+                             onerror="this.src='/static/images/favicon.svg';"
+                             style="object-fit: cover; width: 100%; height: 100%;">
+                    </div>
+                    {% endif %}
+                    <div class="card-content" style="flex-grow: 1; overflow: hidden;">
+                        <span class="card-title" style="font-size: 1rem; line-height: 1.4; margin-bottom: 8px; color: var(--mauve);">{{ article.title }}</span>
+                        <p style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.9rem;">
+                            {{ article.description }}
+                        </p>
+                    </div>
+                    <div class="card-action" style="background-color: #1e1e2e; padding: 12px; border-radius: 0 0 2px 2px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <small style="font-size: 0.8rem;">{{ article.source.name }}</small>
+                                <div style="width: 3px; height: 3px; background-color: #6c7086; border-radius: 50%;"></div>
+                                <small style="font-size: 0.8rem;">{{ article.publishedAt|datetime }}</small>
+                            </div>
+                            <a href="{{ article.url }}" target="_blank" class="btn waves-effect waves-light" 
+                               style="background-color: #cba6f7; height: 28px; line-height: 28px; padding: 0 10px;">
+                                <span style="color: #1e1e2e; text-transform: lowercase; font-size: 0.85rem;">read more</span>
+                                <i class="material-symbols-rounded right" style="margin-left: 4px; font-size: 18px; color: #1e1e2e;">arrow_forward</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col s12">
+                <div class="card-panel">
+                    <span class="material-symbols-rounded left">info</span>
+                    <span style="text-transform: lowercase;">no news articles found. try adjusting your filters or check back later.</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- LOAD MORE BUTTON -->
+    {% if news|length >= 30 %}
+    <div class="row center-align" style="margin-top: 16px;">
+        <button id="loadMoreBtn" class="btn waves-effect waves-light" 
+                style="background-color: #1e1e2e; text-transform: none;">
+            <span style="text-transform: lowercase;">load more</span>
+            <i class="material-symbols-rounded right" style="margin-left: 4px;">expand_more</i>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = true;
+    
+    // INITIALIZE MATERIALIZE SELECT
+    var elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+
+    // FILTER FORM HANDLING
+    const form = document.getElementById('filterForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const select = form.querySelector('select[name="sources"]');
+        const selectedSources = Array.from(select.selectedOptions).map(option => option.value).join(',');
+        
+        const url = new URL(window.location.href);
+        if (selectedSources) {
+            url.searchParams.set('sources', selectedSources);
+        } else {
+            url.searchParams.delete('sources');
+        }
+        url.searchParams.delete('page'); // RESET TO PAGE 1 WHEN FILTERING
+        window.location.href = url.toString();
+    });
+    
+    // LOAD MORE FUNCTIONALITY
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', async function() {
+            if (isLoading || !hasMore) return;
+            
+            try {
+                isLoading = true;
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.style.opacity = '0.7';
+                currentPage++;
+                
+                // SAVE URL STATE
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', currentPage);
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const html = await response.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const newsGrid = document.getElementById('newsGrid');
+                const articles = Array.from(doc.querySelectorAll('#newsGrid .col'));
+                
+                if (articles.length > 0) {
+                    const existingUrls = new Set(
+                        Array.from(newsGrid.querySelectorAll('a[href]'))
+                            .map(a => a.href)
+                            .filter(href => href.includes('http'))
+                    );
+                    
+                    let newArticlesAdded = 0;
+                    articles.forEach(article => {
+                        const articleUrl = article.querySelector('a[href]')?.href;
+                        if (articleUrl && !existingUrls.has(articleUrl)) {
+                            newsGrid.appendChild(article.cloneNode(true));
+                            existingUrls.add(articleUrl);
+                            newArticlesAdded++;
+                        }
+                    });
+                    
+                    if (newArticlesAdded === 0 || articles.length < 30) {
+                        loadMoreBtn.style.display = 'none';
+                        hasMore = false;
+                    }
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                    hasMore = false;
+                }
+            } catch (error) {
+                console.error('Error loading more articles:', error);
+                loadMoreBtn.style.display = 'none';
+                hasMore = false;
+            } finally {
+                isLoading = false;
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.style.opacity = '1';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

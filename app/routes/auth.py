@@ -72,11 +72,17 @@ def register():
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # Redirect if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard.index'))
+
     # HANDLE LOGIN FORM SUBMISSION
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
         if user and user.check_password(request.form['password']):
-            login_user(user)
+            # Get remember me preference
+            remember = 'remember' in request.form
+            login_user(user, remember=remember)
             return redirect(url_for('dashboard.index'))
         flash('invalid username or password')
     return render_template('auth/login.html')

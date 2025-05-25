@@ -16,3 +16,7 @@ Flask-SocketIO==5.3.6
 
 #api
 beautifulsoup4==4.12.3
+newsapi-python==0.2.7
+
+#protocols
+aiohttp

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}compare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">driver comparison</span>
+                
+                <div class="driver-selectors">
+                    <!-- SELECTION -->
+                    <div class="selector-container">
+                        <div class="input-field">
+                            <select id="driver1" class="driver-select">
+                                <option value="" disabled selected>choose first driver</option>
+                                {% for driver in drivers %}
+                                <option value="{{ driver }}">{{ driver.lower() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <select id="driver2" class="driver-select">
+                                <option value="" disabled selected>choose second driver</option>
+                                {% for driver in drivers %}
+                                <option value="{{ driver }}">{{ driver.lower() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMPARISON SECTIONS -->
+                <div class="comparison-sections">
+                    <!-- POINTS COMPARISON -->
+                    <div class="section">
+                        <h3 class="section-title">points progression</h3>
+                        <p class="section-description">compare how drivers accumulated points throughout the season</p>
+                        <div class="chart-container">
+                            <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                                <div class="loading-spinner"></div>
+                            </div>
+                            <canvas id="points-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // THEME COLORS FROM CSS VARIABLES
+    const style = getComputedStyle(document.documentElement);
+    const chartColors = {
+        green: style.getPropertyValue('--green'),
+        blue: style.getPropertyValue('--blue'),
+        greenAlpha: style.getPropertyValue('--green') + '20',
+        blueAlpha: style.getPropertyValue('--blue') + '20',
+    };
+
+    // CHART.JS DEFAULT CONFIGURATION
+    Chart.defaults.color = style.getPropertyValue('--text');
+    Chart.defaults.borderColor = style.getPropertyValue('--surface0');
+    Chart.defaults.font.family = "'Fira Code', monospace";
+
+    // INITIALIZE MATERIALIZE SELECT
+    var elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+
+    // INITIALIZE EMPTY CHART
+    const ctx = document.getElementById('points-chart').getContext('2d');
+    const pointsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // WILL BE FILLED WITH RACE NUMBERS
+            datasets: [] // WILL BE FILLED WITH DRIVER DATA
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        },
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: style.getPropertyValue('--surface0')
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: style.getPropertyValue('--surface0')
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // DEBOUNCE FUNCTION TO LIMIT API CALLS
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // FUNCTION TO SHOW/HIDE LOADING OVERLAY
+    function toggleLoading(show) {
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        loadingOverlay.style.display = show ? 'flex' : 'none';
+    }
+
+    // FUNCTION TO UPDATE CHART DATA
+    const updateChart = debounce(async function() {
+        const driver1 = document.getElementById('driver1').value;
+        const driver2 = document.getElementById('driver2').value;
+
+        if (!driver1 || !driver2) return;
+
+        toggleLoading(true);
+
+        try {
+            const response = await fetch(`/dashboard/api/compare?driver1=${driver1}&driver2=${driver2}`);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // UPDATE CHART DATA EFFICIENTLY
+                pointsChart.data.labels = data.data.races;
+                pointsChart.data.datasets = [
+                    {
+                        label: driver1,
+                        data: data.data.driver1_points,
+                        borderColor: chartColors.green,
+                        backgroundColor: chartColors.greenAlpha,
+                        tension: 0.4,
+                        pointRadius: 4
+                    },
+                    {
+                        label: driver2,
+                        data: data.data.driver2_points,
+                        borderColor: chartColors.blue,
+                        backgroundColor: chartColors.blueAlpha,
+                        tension: 0.4,
+                        pointRadius: 4
+                    }
+                ];
+
+                // BATCH UPDATE FOR BETTER PERFORMANCE
+                pointsChart.update('none'); // UPDATE WITHOUT ANIMATION FOR FASTER RENDERING
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            toggleLoading(false);
+        }
+    }, 300); // 300MS DEBOUNCE DELAY
+
+    // ADD EVENT LISTENERS TO SELECT ELEMENTS
+    document.getElementById('driver1').addEventListener('change', updateChart);
+    document.getElementById('driver2').addEventListener('change', updateChart);
+});
+</script>
+{% endblock %}

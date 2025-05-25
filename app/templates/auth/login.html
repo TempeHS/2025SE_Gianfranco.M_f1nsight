@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}login{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -21,6 +21,10 @@
                         <input id="password" name="password" type="password" required>
                         <label for="password">password</label>
                     </div>
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" class="filled-in">
+                        <span>remember me</span>
+                    </label>
                     <button class="btn waves-effect waves-light" type="submit">
                         login
                         <span class="material-symbols-rounded right">arrow_forward</span>
