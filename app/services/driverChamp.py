@@ -178,14 +178,14 @@ class driverStandings:
         
         # KNOWN RACES
         expected_races = [
-            "Bahrain",       # March 2
-            "Saudi Arabia",  # March 9
-            "Australia",     # March 24
-            "Japan",        # April 7
-            "China",        # April 21
-            "Miami",        # May 5
-            "Imola",        # May 19
-            "Monaco"        # May 24
+            "Australia",
+            "China",
+            "Japan",  
+            "Bahrain",  
+            "Saudi Arabia",  
+            "Miami", 
+            "Imola",
+            "Monaco"
         ]
         
         for race in races:

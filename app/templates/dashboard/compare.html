@@ -100,6 +100,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             scales: {
                 y: {
+                    title: {
+                        display: true,
+                        text: 'points',
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 14
+                        }
+                    },
                     beginAtZero: true,
                     grid: {
                         color: style.getPropertyValue('--surface0')
@@ -112,6 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 x: {
+                    title: {
+                        display: true,
+                        text: 'race',
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 14
+                        }
+                    },
                     grid: {
                         color: style.getPropertyValue('--surface0')
                     },
@@ -168,7 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         borderColor: chartColors.green,
                         backgroundColor: chartColors.greenAlpha,
                         tension: 0.4,
-                        pointRadius: 4
+                        pointRadius: 4,
+                        fill: true
                     },
                     {
                         label: driver2,
@@ -176,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         borderColor: chartColors.blue,
                         backgroundColor: chartColors.blueAlpha,
                         tension: 0.4,
-                        pointRadius: 4
+                        pointRadius: 4,
+                        fill: true
                     }
                 ];
 
