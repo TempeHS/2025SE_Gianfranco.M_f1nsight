@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleLoading(true);
 
         try {
-            const response = await fetch(`/dashboard/api/compare?driver1=${driver1}&driver2=${driver2}`);
+            const response = await fetch(`/dashboard/compare/data?driver1=${driver1}&driver2=${driver2}`);
             const data = await response.json();
 
             if (data.status === 'success') {

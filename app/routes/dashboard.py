@@ -72,9 +72,12 @@ def compare_data():
         race_names = driver1_result['races'] or driver2_result['races']
         
         return jsonify({
-            'driver1_data': driver1_result['points'],
-            'driver2_data': driver2_result['points'],
-            'races': race_names
+            'status': 'success',
+            'data': {
+                'races': race_names,
+                'driver1_points': driver1_result['points'],
+                'driver2_points': driver2_result['points']
+            }
         })
     except Exception as e:
         print(f"Error processing driver data: {e}")
