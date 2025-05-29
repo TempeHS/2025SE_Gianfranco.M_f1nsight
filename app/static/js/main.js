@@ -117,3 +117,4 @@ class SidebarManager {
 document.addEventListener('DOMContentLoaded', function() {
     new SidebarManager();
 });
+

@@ -228,6 +228,8 @@ body.sidebar-collapsed { margin-left: 64px; }
   color: var(--mauve) !important;
 }
 
+
+
 /* Combined Button & Icon Styles */
 .btn, .collapse-toggle {
   background-color: var(--mauve);
@@ -241,6 +243,23 @@ body.sidebar-collapsed { margin-left: 64px; }
   line-height: 32px;
   padding: 0 12px;
   font-size: 0.9rem;
+  min-height: 28px;
+  max-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.btn span {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.btn i {
+  font-size: 1.2em;
+  flex-shrink: 0;
 }
 
 .btn .material-symbols-rounded,
