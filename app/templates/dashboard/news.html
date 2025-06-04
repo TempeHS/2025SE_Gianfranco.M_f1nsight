@@ -9,15 +9,18 @@
                 <div class="card-content">
                     <span class="card-title" style="text-transform: lowercase; color: var(--mauve);">formula 1 news</span>
                     <form id="filterForm">
-                        <div class="input-field" style="width: 250px;">
-                            <select name="sources" multiple>
-                                <option value="" disabled style="text-transform: lowercase;">choose news source</option>
-                                {% for source in sources %}
-                                <option value="{{ source.id }}" {% if source.id in selected_sources %}selected{% endif %}>
-                                    {{ source.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
+                        <div class="source-filters">
+                            {% for source in sources %}
+                            <div class="source-chip">
+                                <md-checkbox 
+                                    id="checkbox-{{ source.id }}"
+                                    name="sources" 
+                                    value="{{ source.id }}"
+                                    {% if source.id in selected_sources %}selected{% endif %}
+                                ></md-checkbox>
+                                <label for="checkbox-{{ source.id }}" class="source-label">{{ source.name }}</label>
+                            </div>
+                            {% endfor %}
                         </div>
                         <button class="btn waves-effect waves-light" type="submit" style="background-color: var(--mauve); margin-top: 16px;">
                             <span style="text-transform: lowercase; color: var(--base);">apply filters</span>
@@ -99,16 +102,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoading = false;
     let hasMore = true;
     
-    // INITIALIZE MATERIALIZE SELECT
-    var elems = document.querySelectorAll('select');
-    M.FormSelect.init(elems);
-
     // FILTER FORM HANDLING
     const form = document.getElementById('filterForm');
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        const select = form.querySelector('select[name="sources"]');
-        const selectedSources = Array.from(select.selectedOptions).map(option => option.value).join(',');
+        const checkboxes = form.querySelectorAll('md-checkbox[selected]');
+        const selectedSources = Array.from(checkboxes).map(checkbox => checkbox.getAttribute('value')).join(',');
         
         const url = new URL(window.location.href);
         if (selectedSources) {
@@ -118,6 +117,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         url.searchParams.delete('page'); // RESET TO PAGE 1 WHEN FILTERING
         window.location.href = url.toString();
+    });
+    
+    // Initialize Material Web checkboxes
+    document.querySelectorAll('md-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            checkbox.toggleAttribute('selected');
+        });
     });
     
     // LOAD MORE FUNCTIONALITY

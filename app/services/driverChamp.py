@@ -158,7 +158,7 @@ class driverStandings:
         # FETCH RACE RESULTS
         async with aiohttp.ClientSession() as session:
             tasks = []
-            for round_num in range(1, 9):  # 8 SO FAR.. NEED TO EDIT
+            for round_num in range(1, 10):  # 9 SO FAR.. NEED TO EDIT
                 task = driverStandings._fetch_race_result(session, year, round_num)
                 tasks.append(task)
             
@@ -185,7 +185,8 @@ class driverStandings:
             "Saudi Arabia",  
             "Miami", 
             "Imola",
-            "Monaco"
+            "Monaco",
+            "Spain"
         ]
         
         for race in races:

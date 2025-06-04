@@ -59,15 +59,19 @@ def compare_data():
     driver2 = request.args.get('driver2')
     year = request.args.get('year', datetime.now().year)
     
-    if not driver1 or not driver2:
-        return jsonify({'error': 'Both drivers must be specified'}), 400
+    if not driver1:
+        return jsonify({'error': 'at least one driver must be specified'}), 400
     
     try:
         driver1_result = driverStandings.get_driver_points(driver1, year)
-        driver2_result = driverStandings.get_driver_points(driver2, year)
+        driver2_result = {'points': [], 'races': []}
+        
+        if driver2:
+            driver2_result = driverStandings.get_driver_points(driver2, year)
         
         print(f"Driver 1 ({driver1}) data:", driver1_result)
-        print(f"Driver 2 ({driver2}) data:", driver2_result)
+        if driver2:
+            print(f"Driver 2 ({driver2}) data:", driver2_result)
         
         race_names = driver1_result['races'] or driver2_result['races']
         
