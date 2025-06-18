@@ -586,6 +586,15 @@ body.sidebar-collapsed { margin-left: 64px; }
   color: var(--sapphire);
 }
 
+.card-panel.info-panel {
+  background-color: var(--mantle) !important;
+  color: var(--text) !important;
+}
+
+.card-panel.info-panel .material-symbols-rounded {
+  color: var(--mauve) !important;
+}
+
 /* HOME PAGE STYLES */
 .home-container {
   text-align: center;
@@ -994,48 +1003,30 @@ body.sidebar-collapsed { margin-left: 64px; }
 
 /* NEWS SOURCE FILTER STYLES */
 .source-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .source-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    background-color: var(--mantle);
-    border: 1px solid var(--surface0);
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: var(--mantle);
+  border-radius: 16px;
 }
 
-.source-chip:hover {
-    background-color: var(--surface0);
-    border-color: var(--overlay0);
+.source-chip input[type="checkbox"] {
+  accent-color: var(--mauve);
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
 }
 
-.source-label {
-    color: var(--text);
-    font-size: 0.95rem;
-    text-transform: lowercase;
-    cursor: pointer;
-    user-select: none;
-}
-
-/* Material Design Checkbox Theme */
-md-checkbox {
-    --md-sys-color-primary: var(--mauve);
-    --md-sys-color-on-primary: var(--base);
-    --md-sys-color-outline: var(--overlay0);
-    --md-checkbox-container-shape: 2px;
-    --md-checkbox-unselected-hover-outline-color: var(--mauve);
-    --md-checkbox-selected-container-color: var(--mauve);
-    --md-checkbox-selected-hover-container-color: var(--mauve);
-    --md-checkbox-unselected-outline-color: var(--overlay0);
-    --md-checkbox-unselected-hover-state-layer-color: var(--surface1);
-    --md-checkbox-selected-hover-state-layer-color: var(--surface1);
-    transform: scale(0.85);
-    cursor: pointer;
+.source-chip span {
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
 }

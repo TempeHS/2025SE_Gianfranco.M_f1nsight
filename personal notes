@@ -1,6 +1,6 @@
 work on keeping email + username input fields filled out when password doesn't match
 
-fix news source checkbox
+// fix news source checkbox
 
 // fix favicon size, bit too small
 
@@ -14,7 +14,7 @@ remember me functionnality
 
 notification functionality
 
-switch to https
+// switch to https
 
 dashboard route doesn't work when accessed from home page
 

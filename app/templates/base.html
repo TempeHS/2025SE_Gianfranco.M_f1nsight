@@ -6,14 +6,18 @@
     <!-- FAVICON.SVG IMPLEMENTATION-->
     <link rel="icon" type="image/svg+xml" href="/static/images/speed.svg">
 
+    <!-- Polyfill for older browsers -->
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
     <!-- GOOGLE'S MATERIAL DESIGN -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     
     <!-- MATERIAL WEB COMPONENTS -->
-    <script type="module" src="https://unpkg.com/@material/web/all.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/@material/web/all.css">
+    <script type="module">
+        import 'https://unpkg.com/@material/mwc-checkbox@latest/mwc-checkbox.js?module';
+    </script>
 
     <!-- CUSTOM CSS & JS-->
     <link rel="stylesheet" href="/static/css/style.css">
