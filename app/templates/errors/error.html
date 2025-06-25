@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ code }} - {{ message }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12 m8 offset-m2">
+            <div class="card">
+                <div class="card-content center-align">
+                    <span class="card-title">
+                        <h1>{{ code }}</h1>
+                    </span>
+                    <p class="flow-text">{{ message }}</p>
+                    {% if details %}
+                        <p>{{ details }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-action center-align">
+                    <a href="{{ url_for('home.index') }}" class="waves-effect waves-light btn">
+                        <i class="material-symbols-rounded left">home</i>
+                        Return Home
+                    </a>
+                    {% if back_allowed %}
+                        <a href="javascript:history.back()" class="waves-effect waves-light btn">
+                            <i class="material-symbols-rounded left">arrow_back</i>
+                            Go Back
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

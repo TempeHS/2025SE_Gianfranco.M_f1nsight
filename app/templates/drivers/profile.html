@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <div class="col s12">
+                            <span class="card-title">{{ profile.name }}</span>
+                            <div class="chip">{{ profile.nationality }}</div>
+                            {% if profile.code %}
+                                <div class="chip">{{ profile.code }}</div>
+                            {% endif %}
+                            {% if profile.number %}
+                                <div class="chip">#{{ profile.number }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <h5>Basic Information</h5>
+                            <p>
+                                <strong>Date of Birth:</strong> {{ profile.dateOfBirth|datetime }}<br>
+                                {% if profile.careerStats %}
+                                    <strong>Career Span:</strong> {{ profile.careerStats.firstRace }} - {{ profile.careerStats.lastRace }}<br>
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        {% if profile.careerStats %}
+                        <div class="col s12 m6">
+                            <h5>Career Statistics</h5>
+                            <p>
+                                <strong>Total Races:</strong> {{ profile.careerStats.totalRaces }}<br>
+                                <strong>Total Wins:</strong> {{ profile.careerStats.totalWins }}<br>
+                                <strong>Total Podiums:</strong> {{ profile.careerStats.totalPodiums }}<br>
+                                <strong>Best Finish:</strong> P{{ profile.careerStats.bestFinish }}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if profile.seasons %}
+                    <div class="row">
+                        <div class="col s12">
+                            <h5>Season Details</h5>
+                            {% for year, stats in profile.seasons.items() %}
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-title">{{ year }} Season</span>
+                                    <p>
+                                        <strong>Position:</strong> {{ stats.position }}<br>
+                                        <strong>Points:</strong> {{ stats.points }}<br>
+                                        <strong>Wins:</strong> {{ stats.wins }}<br>
+                                        {% if stats.constructor %}
+                                            <strong>Team:</strong> {{ stats.constructor }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if profile.wikiUrl %}
+                    <div class="row">
+                        <div class="col s12">
+                            <a href="{{ profile.wikiUrl }}" target="_blank" class="waves-effect waves-light btn">
+                                <i class="material-symbols-rounded left">open_in_new</i>
+                                View on Wikipedia
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

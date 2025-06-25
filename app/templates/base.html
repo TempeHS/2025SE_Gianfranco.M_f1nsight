@@ -22,6 +22,7 @@
     <!-- CUSTOM CSS & JS-->
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/animations.css">
+    <link rel="stylesheet" href="/static/css/drivers.css">
     <script src="/static/js/main.js"></script>
     <!-- CHART.JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -72,6 +73,12 @@
                         <a href="{{ url_for('dashboard.news') }}">
                             <span class="material-symbols-rounded">feed</span>
                             <span class="nav-text">news</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('drivers.search') }}">
+                            <span class="material-symbols-rounded">person_search</span>
+                            <span class="nav-text">driver profiles</span>
                         </a>
                     </li>
                     <li class="nav-spacer"></li>

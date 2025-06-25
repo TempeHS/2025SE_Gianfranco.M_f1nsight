@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Driver Search{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Search F1 Drivers</span>
+                    <div class="row">
+                        <form class="col s12" id="searchForm" method="get">
+                            <div class="input-field col s12 m6">
+                                <select name="year" id="yearSelect" class="browser-default year-select">
+                                    {% for year in years %}
+                                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
+                                            {{ year }} Season
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input type="text" id="searchQuery" name="q" value="{{ query }}">
+                                <label for="searchQuery">Driver Name (Optional)</label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <script>
+                        document.getElementById('yearSelect').addEventListener('change', function() {
+                            document.getElementById('searchForm').submit();
+                        });
+                        
+                        document.getElementById('searchQuery').addEventListener('input', debounce(function() {
+                            document.getElementById('searchForm').submit();
+                        }, 300));
+
+                        // Debounce function to prevent too many requests while typing
+                        function debounce(func, wait) {
+                            let timeout;
+                            return function executedFunction(...args) {
+                                const later = () => {
+                                    clearTimeout(timeout);
+                                    func(...args);
+                                };
+                                clearTimeout(timeout);
+                                timeout = setTimeout(later, wait);
+                            };
+                        }
+                    </script>
+
+                    {% if drivers %}
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>{{ selected_year }} Season Drivers</h5>
+                                {% if query %}
+                                    <p>Showing results for "{{ query }}"</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            {% for driver in drivers %}
+                            <div class="col s12 m6 l4">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">{{ driver.name }}</span>
+                                        {% if driver.position %}
+                                            <div class="chip position">
+                                                P{{ driver.position }} - {{ driver.points }} pts
+                                            </div>
+                                        {% endif %}
+                                        {% if driver.constructor %}
+                                            <div class="chip constructor">
+                                                {{ driver.constructor }}
+                                            </div>
+                                        {% endif %}
+                                        <p>
+                                            <strong>Nationality:</strong> {{ driver.nationality }}<br>
+                                            {% if driver.code %}
+                                                <strong>Code:</strong> {{ driver.code }}<br>
+                                            {% endif %}
+                                            {% if driver.number %}
+                                                <strong>Number:</strong> {{ driver.number }}<br>
+                                            {% endif %}
+                                            {% if driver.wins and driver.wins != '0' %}
+                                                <strong>Season Wins:</strong> {{ driver.wins }}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href="{{ url_for('drivers.profile', driver_id=driver.id, year=selected_year) }}">View Profile</a>
+                                        {% if driver.wikiUrl %}
+                                            <a href="{{ driver.wikiUrl }}" target="_blank">Wikipedia</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% elif request.args.get('q') %}
+                        <p>No drivers found matching your search in the {{ selected_year }} season.</p>
+                    {% else %}
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>{{ selected_year }} Season Drivers</h5>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('searchQuery').addEventListener('input', function(e) {
+    if (e.target.value) {
+        document.getElementById('searchForm').submit();
+    }
+});
+</script>
+{% endblock %}
