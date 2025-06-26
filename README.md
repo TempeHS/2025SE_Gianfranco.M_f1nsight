@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source srcset="public/favicon.svg" width="200">
-    <img alt="f1nsight" src="public/favicon.svg" width="200">
+    <source srcset="app/static/images/favicon.svg" width="200">
+    <img alt="f1nsight" src="app/static/images/favicon.svg" width="200">
   </picture>
 </p>
 
@@ -25,13 +25,13 @@ f1nsight will serve as a data archive and dashboard for f1 enthusiasts built on 
 
 ## features
 
+- informative dashboard with quick access to key information
+
 - historical race data
 
-- driver performance insights
+- driver performance comparison
 
-- team performance insights
-
-- circuit analysis
+- driver profiles
 
 - live desktop notifcations
 
@@ -42,17 +42,39 @@ f1nsight will serve as a data archive and dashboard for f1 enthusiasts built on 
 
 ## how to run
 
+clone git repository
 ```
 git clone https://github.com/TempeHS/2025SE_Gianfranco.M_f1nsight
 ``` 
+
+obtain secret key
 ```
-source .venv/bin/activate
+python
+import secrets
+secrets.token_hex(16)
 ```
 ```
-pip install -r requirements.txt
+insert secret key in .env file
 ```
+
+run installation script (creates and sources venv, installs requirements)
+```
+./installation.sh
+```
+
+use python to run app
 ```
 python run.py
+```
+
+create profile
+```
+click register now and create profile adhering to requirements
+```
+
+login to profile
+```
+enter details and login
 ```
 
 ## contact

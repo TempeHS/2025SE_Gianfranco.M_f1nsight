@@ -90,24 +90,51 @@ def compare_data():
         return jsonify({'error': 'at least one driver must be specified'}), 400
     
     try:
+        # Clear cached data to get fresh results
+        from app import cache
+        cache.delete_memoized(driverStandings.get_driver_points)
+        
+        # Get fresh driver points data
         driver1_result = driverStandings.get_driver_points(driver1, year)
         driver2_result = {'points': [], 'races': []}
         
         if driver2:
             driver2_result = driverStandings.get_driver_points(driver2, year)
         
-        print(f"Driver 1 ({driver1}) data:", driver1_result)
+        # Debug information
+        print(f"Driver 1 ({driver1}) data: {len(driver1_result['races'])} races, {len(driver1_result['points'])} points")
         if driver2:
-            print(f"Driver 2 ({driver2}) data:", driver2_result)
+            print(f"Driver 2 ({driver2}) data: {len(driver2_result['races'])} races, {len(driver2_result['points'])} points")
         
-        race_names = driver1_result['races'] or driver2_result['races']
+        # Validate data integrity
+        if len(driver1_result['races']) != len(driver1_result['points']):
+            print(f"Warning: Mismatch in driver1 data lengths - races: {len(driver1_result['races'])}, points: {len(driver1_result['points'])}")
+            
+        if driver2 and len(driver2_result['races']) != len(driver2_result['points']):
+            print(f"Warning: Mismatch in driver2 data lengths - races: {len(driver2_result['races'])}, points: {len(driver2_result['points'])}")
+        
+        # Use the race names from whichever driver has more data
+        race_names = driver1_result['races']
+        if len(driver2_result['races']) > len(race_names):
+            race_names = driver2_result['races']
+        
+        # Make sure points arrays match the race names array length
+        driver1_points = driver1_result['points']
+        driver2_points = driver2_result['points']
+        
+        # If one driver has fewer races, pad their points with zeros
+        if len(driver1_points) < len(race_names):
+            driver1_points = driver1_points + [driver1_points[-1] if driver1_points else 0] * (len(race_names) - len(driver1_points))
+            
+        if len(driver2_points) < len(race_names):
+            driver2_points = driver2_points + [driver2_points[-1] if driver2_points else 0] * (len(race_names) - len(driver2_points))
         
         return jsonify({
             'status': 'success',
             'data': {
                 'races': race_names,
-                'driver1_points': driver1_result['points'],
-                'driver2_points': driver2_result['points']
+                'driver1_points': driver1_points,
+                'driver2_points': driver2_points
             }
         })
     except Exception as e:

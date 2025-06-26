@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const pointsChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [], // WILL BE FILLED WITH RACE NUMBERS
-            datasets: [] // WILL BE FILLED WITH DRIVER DATA
+            labels: [],
+            datasets: []
         },
         options: {
             responsive: true,
@@ -109,6 +109,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         padding: 20,
                         usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.parsed.y} points`;
+                        }
                     }
                 }
             },
@@ -136,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 x: {
                     title: {
                         display: true,
-                        text: 'race',
+                        text: '2025 races',
                         font: {
                             family: "'Fira Code', monospace",
                             size: 14
@@ -148,8 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     ticks: {
                         font: {
                             family: "'Fira Code', monospace",
-                            size: 12
-                        }
+                            size: 11
+                        },
+                        maxRotation: 45,
+                        minRotation: 45,
+                        autoSkip: false
                     }
                 }
             }
@@ -186,9 +199,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const response = await fetch(`/dashboard/compare/data?driver1=${driver1}&driver2=${driver2}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             const data = await response.json();
 
             if (data.status === 'success') {
+                console.log(`Received data for ${data.data.races.length} races`);
+                
+                if (data.data.races.length === 0) {
+                    console.warn('No race data available');
+                    toggleLoading(false);
+                    return;
+                }
+                
                 // UPDATE CHART DATA EFFICIENTLY
                 pointsChart.data.labels = data.data.races;
                 pointsChart.data.datasets = [
@@ -213,7 +238,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 ];
 
                 // BATCH UPDATE FOR BETTER PERFORMANCE
-                pointsChart.update('none'); // UPDATE WITHOUT ANIMATION FOR FASTER RENDERING
+                pointsChart.update();
+            } else {
+                console.error('Error in response:', data.error || 'Unknown error');
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -222,11 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 300); // 300MS DEBOUNCE DELAY
 
-    // DRIVER SEARCH FUNCTIONALITY
-    function initDriverSearch(driverSearchClass, driverOptionsId, driverSelectedId) {
-        const searchInput = document.querySelector(`.${driverSearchClass}`);
-        const optionsContainer = document.getElementById(driverOptionsId);
-        const selectedDriver = document.getElementById(driverSelectedId);
+    // FUNCTION TO INITIALIZE DRIVER SEARCH
+    function initDriverSearch(searchContainer) {
+        const searchInput = searchContainer.querySelector('.driver-search');
+        const optionsContainer = searchContainer.querySelector('.select-options');
+        const selectedDriverText = searchContainer.querySelector('.selected-driver');
+        const hiddenInput = searchContainer.querySelector('input[type="hidden"]');
 
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
@@ -241,10 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         optionsContainer.addEventListener('click', function(e) {
             if (e.target.classList.contains('select-option')) {
                 const driverName = e.target.getAttribute('data-value');
-                selectedDriver.value = driverName;
-
-                // UPDATE SELECTED DRIVER TEXT
-                const selectedDriverText = document.querySelector(`.selected-driver`);
+                hiddenInput.value = driverName;
                 selectedDriverText.textContent = driverName.toLowerCase();
 
                 // CLEAR SEARCH INPUT AND HIDE OPTIONS
@@ -258,9 +283,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // INITIALIZE DRIVER SEARCH FOR BOTH SELECTORS
-    initDriverSearch('driver-search', 'driver1-options', 'driver1');
-    initDriverSearch('driver-search', 'driver2-options', 'driver2');
+    // INITIALIZE EACH DRIVER SELECTOR SEPARATELY
+    const driverSelectors = document.querySelectorAll('.custom-select');
+    driverSelectors.forEach(selector => {
+        initDriverSearch(selector);
+    });
+
+    // CLICK HANDLERS FOR SELECT HEADERS (DROPDOWN TOGGLE)
+    document.querySelectorAll('.select-header').forEach(header => {
+        header.addEventListener('click', function() {
+            const container = this.closest('.custom-select');
+            const options = container.querySelector('.select-options');
+            const search = container.querySelector('.select-search');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.select-options, .select-search').forEach(el => {
+                if (el !== options && el !== search) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Toggle current dropdown
+            options.style.display = options.style.display === 'none' ? 'block' : 'none';
+            search.style.display = search.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select')) {
+            document.querySelectorAll('.select-options, .select-search').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    });
 });
 </script>
 {% endblock %}

@@ -792,9 +792,26 @@ body.sidebar-collapsed { margin-left: 64px; }
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  gap: 1.5rem;
   width: 100%;
   max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .feature-card {
+    padding: 1.5rem;
+  }
+  
+  .feature-card .material-symbols-rounded {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
 }
 
 .feature-card {
@@ -802,6 +819,11 @@ body.sidebar-collapsed { margin-left: 64px; }
   padding: 2rem;
   border-radius: 1rem;
   transition: transform 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
 }
 
 .feature-card:hover {
@@ -816,7 +838,23 @@ body.sidebar-collapsed { margin-left: 64px; }
 
 .feature-card h3 {
   color: var(--mauve);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feature-card p {
+  margin: 0;
+  width: 100%;
+  font-size: 0.9rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* STANDINGS TABLE STYLES */
