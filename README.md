@@ -20,6 +20,8 @@
   </ul>
 </div>
 
+![f1gif](app/static/gif/F1nsight.gif)
+
 ## what is f1nsight for?
 f1nsight will serve as a data archive and dashboard for f1 enthusiasts built on a secure architecture, and supported by flask
 
@@ -76,6 +78,16 @@ login to profile
 ```
 enter details and login
 ```
+
+## sprint summary
+[sprint-1](https://github.com/TempeHS/2025SE_Gianfranco.M_f1nsight/tree/sprint-1) used to build core functionality such as authentication, comparison graphs and standings tables
+
+[sprint-2](https://github.com/TempeHS/2025SE_Gianfranco.M_f1nsight/tree/sprint-2) used for UI/UX improvements, notifications, theming, and advanced features like race calendar database and driver profiles
+ 
+main branch used for final merges and testing.
+
+
+
 
 ## contact
 gmanieli5647@gmail.com - gianfranco, lead dev
