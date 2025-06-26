@@ -1,18 +1,18 @@
 import requests
 from datetime import datetime
-from functools import lru_cache
 import asyncio
 import aiohttp
+from functools import lru_cache
+from app import cache
 
 class driverStandings:
     """
     # SERVICE FOR FETCHING F1 DATA FROM JOLPICA-F1 API
     """
     BASE_URL = "https://api.jolpi.ca/ergast/f1"
-    _cache = {}  # DRIVER STANDINGS CACHE
 
     @staticmethod
-    @lru_cache(maxsize=32)  # CACHE DRIVER STANDINGS
+    @cache.memoize(timeout=300)  # Cache for 5 minutes
     def get_driver_standings(year=None):
         """
         # FETCH DRIVER STANDINGS
@@ -26,20 +26,18 @@ class driverStandings:
 
         url = f"{driverStandings.BASE_URL}/{year}/driverstandings/"
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=5)  # Add timeout
             response.raise_for_status()
             data = response.json()
             
             # DATA STRUCTURE VALIDATIE
             if not all(key in data for key in ['MRData']):
-                print(f"Invalid data structure for year {year}")
                 return []
                 
             standings_table = data['MRData'].get('StandingsTable', {})
             lists = standings_table.get('StandingsLists', [])
             
             if not lists:
-                print(f"No standings data found for year {year}")
                 return []
                 
             drivers = lists[0].get('DriverStandings', [])
@@ -58,40 +56,33 @@ class driverStandings:
                         'position': d.get('position', 'N/A'),
                         'points': d.get('points', '0'),
                         'driver': f"{driver.get('givenName', '')} {driver.get('familyName', '')}".strip(),
-                        'constructor': constructor.get('name', 'Unknown')
+                        'constructor': constructor.get('name', 'Unknown'),
+                        'driverId': driver.get('driverId', '')
                     })
-                except Exception as e:
-                    print(f"Error processing driver entry: {e}")
+                except Exception:
                     continue
-                    
+            
             return formatted_standings
             
-        except requests.exceptions.RequestException as e:
-            print(f"Network error fetching standings: {e}")
+        except requests.exceptions.RequestException:
             return []
-        except ValueError as e:
-            print(f"JSON parsing error: {e}")
-            return []
-        except Exception as e:
-            print(f"Unexpected error fetching standings: {e}")
+        except Exception:
             return []
 
     @staticmethod
-    @lru_cache(maxsize=1)  # Cache the seasons list since it rarely changes
+    @cache.memoize(timeout=3600)  # Cache for 1 hour
     def get_available_seasons():
         """
-        # FETCH ALL AVAILABLE SEASONS FOR DROPDOWN (set high limit)
+        # FETCH ALL AVAILABLE SEASONS FOR DROPDOWN
         """
         try:
             url = f"{driverStandings.BASE_URL}/seasons/?limit=100"
-            response = requests.get(url)
+            response = requests.get(url, timeout=5)
             response.raise_for_status()
             data = response.json()
             seasons = data['MRData']['SeasonTable']['Seasons']
-            # AI SOLUTION FOR SORTING
             return sorted([int(season['season']) for season in seasons], reverse=True)
-        except Exception as e:
-            print(f"Error fetching seasons: {e}")
+        except Exception:
             return []
 
     @staticmethod

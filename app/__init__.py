@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_caching import Cache
 from config import Config
 from datetime import datetime
 
@@ -9,6 +10,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_message = ''
 migrate = Migrate()
+cache = Cache()
 
 def format_datetime(value):
     if isinstance(value, str):
@@ -34,6 +36,9 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
+    
+    # Initialize caching
+    cache.init_app(app)
 
     # REGISTER FILTERS
     app.jinja_env.filters['datetime'] = format_datetime

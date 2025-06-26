@@ -136,6 +136,33 @@ body.sidebar-collapsed { margin-left: 64px; }
   width: 64px;
 }
 
+/* Mobile menu button - only visible on mobile */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10000;
+  background-color: var(--mauve);
+  border: none;
+  color: var(--base);
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+  background-color: var(--blue);
+  transform: scale(1.05);
+}
+
+.mobile-close-btn {
+  display: none;
+}
+
 .sidebar {
   background-color: var(--mantle);
   height: 100%;
@@ -380,15 +407,69 @@ body.sidebar-collapsed { margin-left: 64px; }
 @media (max-width: 600px) {
   body {
     margin-left: 0;
+    padding-top: 80px; /* Add space for mobile menu button */
+  }
+
+  /* Show mobile menu button */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .sidebar-container {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
+    width: 280px;
+    z-index: 9999;
   }
 
   .sidebar-container.mobile-visible {
     transform: translateX(0);
+  }
+
+  .sidebar {
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Add overlay for mobile */
+  .sidebar-container.mobile-visible::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  /* Mobile close button */
+  .mobile-close-btn {
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-close-btn:hover {
+    background-color: var(--surface0);
+  }
+
+  /* Hide desktop toggle on mobile */
+  .sidebar-toggle {
+    display: none;
   }
 
   .card {
@@ -828,6 +909,76 @@ body.sidebar-collapsed { margin-left: 64px; }
   color: var(--mauve);
 }
 
+/* Season Selector Specific Styles */
+.season-select-wrapper {
+    position: relative;
+}
+
+.season-select-wrapper .select-dropdown {
+    font-size: 1rem;
+    padding: 0 8px;
+}
+
+.season-select-wrapper .dropdown-content {
+    max-height: 400px !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.season-select-wrapper .dropdown-content li > span {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+}
+
+.season-select-wrapper .select-dropdown li.selected {
+    background-color: var(--surface0);
+}
+
+.season-select-wrapper .select-dropdown li.selected span {
+    color: var(--mauve);
+}
+
+.season-select-wrapper .caret {
+    color: var(--text) !important;
+}
+
+/* Compact Season Selector */
+.season-select-wrapper.compact {
+    position: relative;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.season-select-label {
+    color: var(--subtext0);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.season-select-wrapper.compact .select-wrapper input.select-dropdown {
+    height: 36px;
+    line-height: 36px;
+    margin: 0;
+    padding: 0 8px;
+    border: 1px solid var(--surface0) !important;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 120px;
+}
+
+.card-title-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.card-title-group .card-title {
+    margin-bottom: 8px !important;
+}
+
 /* PROFILE CARD STYLES */
 .profile-info {
   display: flex;
@@ -914,9 +1065,10 @@ body.sidebar-collapsed { margin-left: 64px; }
 }
 
 .profile-section h3 {
-  color: var(--mauve);
   font-size: 1.2rem;
+  color: var(--primary-color);
   margin-bottom: 1rem;
+  text-transform: uppercase;
 }
 
 .profile-actions {
@@ -929,23 +1081,38 @@ body.sidebar-collapsed { margin-left: 64px; }
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .preference-option {
-  color: var(--text);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.preference-option [type="checkbox"].filled-in:checked + span:after {
-  border: 2px solid var(--mauve);
-  background-color: var(--mauve);
+.preference-option:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-.preference-option [type="checkbox"].filled-in:not(:checked) + span:after {
-  border: 2px solid var(--overlay1);
+.notification-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.preference-option span {
-  color: var(--text) !important;
+.helper-text {
+  margin-left: 35px;
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.notification-info {
+  opacity: 0.7;
 }
 
 /* COMPARISON SECTIONS */
@@ -1007,6 +1174,79 @@ body.sidebar-collapsed { margin-left: 64px; }
 
 @keyframes spinner {
   to { transform: rotate(360deg); }
+}
+
+/* Loader Styles */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--base);
+    z-index: 10000;
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-loader.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader-text {
+    color: var(--text);
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.loader-car {
+    width: 60px;
+    height: 30px;
+    position: relative;
+    animation: bounce 1s infinite;
+}
+
+.loader-car::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--mauve);
+    border-radius: 10px;
+}
+
+.loader-car::after {
+    content: '';
+    position: absolute;
+    left: 10px;
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--mauve);
+    border-radius: 50%;
+    box-shadow: 28px 0 0 var(--mauve);
+    animation: wheels 1s infinite linear;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes wheels {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* CARD AND SEASON SELECT STYLES */
@@ -1079,4 +1319,131 @@ body.sidebar-collapsed { margin-left: 64px; }
   color: var(--text);
   font-size: 14px;
   cursor: pointer;
+}
+
+/* COLLECTION STYLES */
+.collection {
+    border: none;
+    margin: 0;
+}
+
+.collection .collection-item {
+    background-color: var(--mantle);
+    border: none;
+    color: var(--text);
+    padding: 12px 16px;
+    transition: background-color 0.2s ease;
+}
+
+.collection .collection-item:hover {
+    background-color: var(--surface0);
+}
+
+.collection a.collection-item {
+    color: var(--text);
+}
+
+.collection a.collection-item:not(.active):hover {
+    background-color: var(--surface0);
+}
+
+/* Fix for constructor standings list */
+.collection-item .badge {
+    color: var(--text);
+}
+
+/* Page Loader Styles */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--base);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease-out;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-car {
+    width: 50px;
+    height: 30px;
+    background-color: var(--mauve);
+    position: relative;
+    animation: drive 1s infinite linear;
+    border-radius: 10px;
+}
+
+.loader-car::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--mauve);
+    border-radius: 50%;
+    box-shadow: 25px 0 0 var(--mauve);
+    animation: wheels 1s infinite linear;
+}
+
+@keyframes drive {
+    0% { transform: translateX(-100px) }
+    100% { transform: translateX(100px) }
+}
+
+@keyframes wheels {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+}
+
+/* Dropdown Styles */
+.select-wrapper .dropdown-content {
+    background-color: var(--mantle);
+    border: 1px solid var(--surface0);
+    border-radius: 8px;
+    top: 100% !important;
+    z-index: 9999 !important;
+}
+
+.select-wrapper .dropdown-content li {
+    min-height: 40px;
+    background-color: var(--mantle);
+}
+
+.select-wrapper .dropdown-content li > span {
+    color: var(--text);
+    padding: 8px 16px;
+}
+
+.select-wrapper .dropdown-content li:hover,
+.select-wrapper .dropdown-content li.selected {
+    background-color: var(--surface0);
+}
+
+.select-wrapper input.select-dropdown {
+    color: var(--text) !important;
+    border-bottom-color: var(--surface0) !important;
+}
+
+.select-wrapper input.select-dropdown:focus {
+    border-bottom-color: var(--mauve) !important;
+}
+
+/* Fix for select dropdown caret */
+.select-wrapper .caret {
+    fill: var(--text) !important;
+}
+
+/* Ensure dropdowns appear above other content */
+.dropdown-content,
+.select-dropdown {
+    z-index: 9999 !important;
 }

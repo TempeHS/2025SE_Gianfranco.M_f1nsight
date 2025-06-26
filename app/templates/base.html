@@ -29,31 +29,52 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Navigation Management (load this first) -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
 
     <!-- DEFER NON-CRITICAL JAVASCRIPT -->
-    <script defer src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/compare.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <script defer src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
 
-    <!-- MATERIAL WEB COMPONENTS -->
-    <script type="module" defer>
-        import 'https://unpkg.com/@material/mwc-checkbox@latest/mwc-checkbox.js?module';
+    <!-- CHART.JS (without source maps) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- Prevent FOUC -->
+    <script>
+        // Hide content until everything is loaded
+        document.documentElement.style.visibility = 'hidden';
+        window.addEventListener('load', function() {
+            document.documentElement.style.visibility = 'visible';
+        });
     </script>
-
-    <!-- CHART.JS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="page-loader">
-        <div class="loader-car"></div>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-car"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
     </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span class="material-symbols-rounded">menu</span>
+    </button>
 
     <!-- SIDEBAR -->
     <div class="sidebar-container">
         <nav class="sidebar">
+            <!-- Mobile Close Button -->
+            <button class="mobile-close-btn" id="mobileCloseBtn">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+            
             <!-- LOGO -->
             <div class="sidebar-header">
                 <a href="{{ url_for('home.index') }}" class="brand-logo">
@@ -150,9 +171,6 @@
         
         {% block content %}{% endblock %}
     </main>
-
-    <!-- JS DEPENDANCIES -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <!-- MOBILE JS-->
     <script>

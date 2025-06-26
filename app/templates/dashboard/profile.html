@@ -8,6 +8,17 @@
         <div class="card profile-page-card">
             <div class="card-content">
                 <span class="card-title">my profile</span>
+                <div id="profile-messages">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert {{ category }}">
+                                    <p>{{ message }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
                 <div class="profile-page-info">
                     <div class="profile-header">
                         <span class="material-symbols-rounded profile-page-icon">account_circle</span>
@@ -20,11 +31,11 @@
                     <div class="profile-section">
                         <h3>account settings</h3>
                         <div class="profile-actions">
-                            <a href="#" class="btn waves-effect waves-light">
+                            <a href="{{ url_for('dashboard.change_password_page') }}" class="btn waves-effect waves-light">
                                 <span class="material-symbols-rounded">lock</span>
                                 change password
                             </a>
-                            <a href="#" class="btn waves-effect waves-light">
+                            <a href="{{ url_for('dashboard.edit_profile') }}" class="btn waves-effect waves-light">
                                 <span class="material-symbols-rounded">edit</span>
                                 edit profile
                             </a>
@@ -34,13 +45,12 @@
                     <div class="profile-section">
                         <h3>preferences</h3>
                         <div class="profile-preferences">
-                            <label class="preference-option">
-                                <input type="checkbox" class="filled-in" checked="checked">
-                                <span>enable email notifications</span>
-                            </label>
-                            <label class="preference-option">
-                                <input type="checkbox" class="filled-in">
+                            <label class="preference-option notification-option">
+                                <input type="checkbox" class="filled-in" id="notificationToggle">
                                 <span>enable desktop notifications</span>
+                                <div class="helper-text">
+                                    <small class="notification-info">Race updates and news alerts will be sent to your desktop</small>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -49,4 +59,30 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+    
+    .alert.success {
+        background-color: #dff0d8;
+        border: 1px solid #d0e9c6;
+        color: #3c763d;
+    }
+    
+    .alert.error {
+        background-color: #f2dede;
+        border: 1px solid #ebcccc;
+        color: #a94442;
+    }
+    
+    #profile-messages {
+        margin-bottom: 20px;
+    }
+</style>
 {% endblock %}

@@ -1,0 +1,115 @@
+/* Dashboard-specific styles */
+.profile-card {
+    margin-bottom: 20px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+}
+
+.profile-info:hover {
+    background-color: var(--surface0);
+}
+
+.profile-icon {
+    font-size: 48px;
+    margin-right: 15px;
+    color: var(--blue);
+}
+
+.profile-details {
+    flex-grow: 1;
+}
+
+.profile-details .username {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--text);
+}
+
+.profile-details .email {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--subtext1);
+}
+
+.profile-arrow {
+    color: var(--overlay1);
+}
+
+/* Driver link styling */
+.driver-link {
+    color: var(--blue);
+    transition: color 0.2s;
+}
+
+.driver-link:hover {
+    color: var(--lavender);
+    text-decoration: underline;
+}
+
+/* Random driver card */
+.random-driver-container {
+    text-align: center;
+}
+
+.driver-image-container {
+    border: 3px solid var(--surface2);
+    transition: border-color 0.3s;
+}
+
+.driver-image-container:hover {
+    border-color: var(--blue);
+}
+
+.driver-name {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.driver-details p {
+    margin: 5px 0;
+    color: var(--subtext0);
+}
+
+/* Quick access links */
+.collection .collection-item {
+    background-color: transparent;
+    border-color: var(--surface1);
+    color: var(--text);
+    transition: background-color 0.3s;
+}
+
+.collection .collection-item:hover {
+    background-color: var(--surface0);
+}
+
+/* Season selector styling */
+select {
+    background-color: var(--surface0);
+    color: var(--text);
+    border: 1px solid var(--surface2);
+}
+
+.select-wrapper input.select-dropdown {
+    color: var(--text);
+}
+
+.select-wrapper .dropdown-content li > span {
+    color: var(--text);
+}
+
+.dropdown-content {
+    background-color: var(--surface0);
+}
+
+.dropdown-content li:hover, 
+.dropdown-content li.active {
+    background-color: var(--surface1);
+}
