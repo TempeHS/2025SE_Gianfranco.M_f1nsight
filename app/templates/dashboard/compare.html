@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}compare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title" style="text-transform: lowercase; color: var(--mauve);">driver comparison</span>
+                
+                <div class="driver-selectors">
+                    <!-- SELECTION -->
+                    <div class="selector-container">
+                        <div class="custom-select">
+                            <div class="select-header">
+                                <span class="selected-driver">choose first driver</span>
+                                <span class="material-symbols-rounded">expand_more</span>
+                            </div>
+                            <div class="select-search">
+                                <input type="text" placeholder="search drivers..." class="driver-search">
+                            </div>
+                            <div class="select-options" id="driver1-options">
+                                {% for driver in drivers %}
+                                <div class="select-option" data-value="{{ driver }}">
+                                    {{ driver.lower() }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="driver1" value="">
+                        </div>
+                        <div class="custom-select">
+                            <div class="select-header">
+                                <span class="selected-driver">choose second driver</span>
+                                <span class="material-symbols-rounded">expand_more</span>
+                            </div>
+                            <div class="select-search">
+                                <input type="text" placeholder="search drivers..." class="driver-search">
+                            </div>
+                            <div class="select-options" id="driver2-options">
+                                {% for driver in drivers %}
+                                <div class="select-option" data-value="{{ driver }}">
+                                    {{ driver.lower() }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="driver2" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMPARISON SECTIONS -->
+                <div class="comparison-sections">
+                    <!-- POINTS COMPARISON -->
+                    <div class="section">
+                        <h3 class="section-title">points progression</h3>
+                        <p class="section-description">compare how drivers accumulated points throughout the season</p>
+                        <div class="chart-container">
+                            <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                                <div class="loading-spinner"></div>
+                            </div>
+                            <canvas id="points-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // THEME COLORS FROM CSS VARIABLES
+    const style = getComputedStyle(document.documentElement);
+    const chartColors = {
+        green: style.getPropertyValue('--green'),
+        blue: style.getPropertyValue('--blue'),
+        greenAlpha: style.getPropertyValue('--green') + '20',
+        blueAlpha: style.getPropertyValue('--blue') + '20',
+    };
+
+    // CHART.JS DEFAULT CONFIGURATION
+    Chart.defaults.color = style.getPropertyValue('--text');
+    Chart.defaults.borderColor = style.getPropertyValue('--surface0');
+    Chart.defaults.font.family = "'Fira Code', monospace";
+
+    // INITIALIZE EMPTY CHART
+    const ctx = document.getElementById('points-chart').getContext('2d');
+    const pointsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [], // WILL BE FILLED WITH RACE NUMBERS
+            datasets: [] // WILL BE FILLED WITH DRIVER DATA
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        },
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'points',
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 14
+                        }
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        color: style.getPropertyValue('--surface0')
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'race',
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        color: style.getPropertyValue('--surface0')
+                    },
+                    ticks: {
+                        font: {
+                            family: "'Fira Code', monospace",
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // DEBOUNCE FUNCTION TO LIMIT API CALLS
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // FUNCTION TO SHOW/HIDE LOADING OVERLAY
+    function toggleLoading(show) {
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        loadingOverlay.style.display = show ? 'flex' : 'none';
+    }
+
+    // FUNCTION TO UPDATE CHART DATA
+    const updateChart = debounce(async function() {
+        const driver1 = document.getElementById('driver1').value;
+        const driver2 = document.getElementById('driver2').value;
+
+        if (!driver1 || !driver2) return;
+
+        toggleLoading(true);
+
+        try {
+            const response = await fetch(`/dashboard/compare/data?driver1=${driver1}&driver2=${driver2}`);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // UPDATE CHART DATA EFFICIENTLY
+                pointsChart.data.labels = data.data.races;
+                pointsChart.data.datasets = [
+                    {
+                        label: driver1,
+                        data: data.data.driver1_points,
+                        borderColor: chartColors.green,
+                        backgroundColor: chartColors.greenAlpha,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        fill: true
+                    },
+                    {
+                        label: driver2,
+                        data: data.data.driver2_points,
+                        borderColor: chartColors.blue,
+                        backgroundColor: chartColors.blueAlpha,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        fill: true
+                    }
+                ];
+
+                // BATCH UPDATE FOR BETTER PERFORMANCE
+                pointsChart.update('none'); // UPDATE WITHOUT ANIMATION FOR FASTER RENDERING
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            toggleLoading(false);
+        }
+    }, 300); // 300MS DEBOUNCE DELAY
+
+    // DRIVER SEARCH FUNCTIONALITY
+    function initDriverSearch(driverSearchClass, driverOptionsId, driverSelectedId) {
+        const searchInput = document.querySelector(`.${driverSearchClass}`);
+        const optionsContainer = document.getElementById(driverOptionsId);
+        const selectedDriver = document.getElementById(driverSelectedId);
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const options = optionsContainer.querySelectorAll('.select-option');
+
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                option.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        optionsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('select-option')) {
+                const driverName = e.target.getAttribute('data-value');
+                selectedDriver.value = driverName;
+
+                // UPDATE SELECTED DRIVER TEXT
+                const selectedDriverText = document.querySelector(`.selected-driver`);
+                selectedDriverText.textContent = driverName.toLowerCase();
+
+                // CLEAR SEARCH INPUT AND HIDE OPTIONS
+                searchInput.value = '';
+                optionsContainer.querySelectorAll('.select-option').forEach(option => {
+                    option.style.display = 'block';
+                });
+
+                updateChart();
+            }
+        });
+    }
+
+    // INITIALIZE DRIVER SEARCH FOR BOTH SELECTORS
+    initDriverSearch('driver-search', 'driver1-options', 'driver1');
+    initDriverSearch('driver-search', 'driver2-options', 'driver2');
+});
+</script>
+{% endblock %}

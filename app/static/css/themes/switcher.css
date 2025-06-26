@@ -1,0 +1,89 @@
+.theme-switcher {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--surface0);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--shadow);
+    padding: 12px;
+    border: 1px solid var(--border);
+}
+
+.theme-switcher .theme-title {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.theme-option:hover {
+    background: var(--hover);
+}
+
+.theme-option.active {
+    background: var(--active);
+}
+
+.theme-option-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+}
+
+.theme-option-color.default {
+    background: linear-gradient(45deg, var(--primary) 50%, var(--surface0) 50%);
+}
+
+.theme-option-color.ferrari {
+    background: linear-gradient(45deg, #DC0000 50%, #FFB800 50%);
+}
+
+.theme-option-color.mclaren {
+    background: linear-gradient(45deg, #FF8700 50%, #0090D4 50%);
+}
+
+/* Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--surface0);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+.theme-toggle i {
+    color: var(--text);
+    font-size: 20px;
+}

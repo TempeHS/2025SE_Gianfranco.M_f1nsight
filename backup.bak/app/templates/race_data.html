@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Historical Race Data</h4>
+<ul class="collection">
+    {% for race in races %}
+        <li class="collection-item">
+            {{ race.year }} - {{ race.grand_prix }} - {{ race.driver }} ({{ race.position }})
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}historical data{% endblock %}
+
+{% block content %}
+<div class="row standings-container">
+    <div class="col m6 s12">
+        <div class="card" id="driverStandingsCard">
+            <div class="card-content">
+                <div class="card-title-wrapper">
+                    <div class="title-group">
+                        <span class="card-title">all-time driver standings</span>
+                        <button class="collapse-toggle btn-flat">
+                            <span class="material-symbols-rounded">expand_less</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="standings-table" id="driverStandingsTable">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Driver</th>
+                                <th>Points</th>
+                                <th>Wins</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if driver_standings %}
+                            {% for driver in driver_standings %}
+                            <tr>
+                                <td>{{ driver.position }}</td>
+                                <td>{{ driver.driver_name if driver.driver_name else driver.name }}</td>
+                                <td>{{ driver.points }}</td>
+                                <td>{{ driver.wins }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No driver standings data available</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col m6 s12">
+        <div class="card" id="nationStandingsCard">
+            <div class="card-content">
+                <div class="card-title-wrapper">
+                    <div class="title-group">
+                        <span class="card-title">nation standings</span>
+                        <button class="collapse-toggle btn-flat">
+                            <span class="material-symbols-rounded">expand_less</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="standings-table" id="nationStandingsTable">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Nation</th>
+                                <th>Podiums</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if nation_standings %}
+                            {% for nation in nation_standings %}
+                            <tr>
+                                <td>{{ nation.position }}</td>
+                                <td>{{ nation.nationality if nation.nationality else nation.name }}</td>
+                                <td>{{ nation.podiums }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="3" style="text-align: center;">No nation standings data available</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

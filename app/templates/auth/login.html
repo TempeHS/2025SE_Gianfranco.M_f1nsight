@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}login{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div class="card login-card">
+            <div class="card-content">
+                <span class="card-title">
+                    login
+                </span>
+                <form method="post">
+                    <div class="input-field">
+                        <span class="material-symbols-rounded prefix">person</span>
+                        <input id="username" name="username" type="text" required>
+                        <label for="username">username</label>
+                    </div>
+                    <div class="input-field">
+                        <span class="material-symbols-rounded prefix">lock</span>
+                        <input id="password" name="password" type="password" required>
+                        <label for="password">password</label>
+                    </div>
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" class="filled-in">
+                        <span>remember me</span>
+                    </label>
+                    <button class="btn waves-effect waves-light" type="submit">
+                        login
+                        <span class="material-symbols-rounded right">arrow_forward</span>
+                    </button>
+                </form>
+            </div>
+            <div class="card-action">
+                <span class="material-symbols-rounded">person_add</span>
+                new user? <a href="{{ url_for('auth.register') }}">register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

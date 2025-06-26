@@ -1,0 +1,738 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card driver-profile-card">
+                <div class="card-content">
+                    <!-- Back Button -->
+                    <div class="back-navigation">
+                        <a href="{{ url_for('drivers.search', year=request.args.get('year')) }}" class="btn-back">
+                            <i class="material-symbols-rounded">arrow_back</i>
+                            Back to Search
+                        </a>
+                        
+                        <!-- Driver Navigation -->
+                        <div class="driver-navigation">
+                            {% if profile.prev_driver %}
+                            <a href="{{ url_for('drivers.profile', driver_id=profile.prev_driver.id, year=request.args.get('year')) }}" class="driver-nav-btn prev-driver">
+                                <i class="material-symbols-rounded">chevron_left</i>
+                                <span class="nav-driver-info">
+                                    <span class="nav-label">Previous</span>
+                                    <span class="nav-driver-name">P{{ profile.prev_driver.position }} {{ profile.prev_driver.name }}</span>
+                                </span>
+                            </a>
+                            {% endif %}
+                            
+                            {% if profile.next_driver %}
+                            <a href="{{ url_for('drivers.profile', driver_id=profile.next_driver.id, year=request.args.get('year')) }}" class="driver-nav-btn next-driver">
+                                <span class="nav-driver-info">
+                                    <span class="nav-label">Next</span>
+                                    <span class="nav-driver-name">P{{ profile.next_driver.position }} {{ profile.next_driver.name }}</span>
+                                </span>
+                                <i class="material-symbols-rounded">chevron_right</i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                
+                <!-- Driver Header -->
+                    <div class="driver-header">
+                        <div class="driver-header-content">
+                            <div class="driver-info">
+                                <h2 class="driver-name" id="driverName">{{ profile.name }}</h2>
+                                <div class="driver-tags">
+                                    <div class="driver-tag nationality">
+                                        {% if profile.nationality %}
+                                            {% set countryCode = profile.nationality|lower|replace(' ', '-') %}
+                                            {% set countryFlag = get_country_code(profile.nationality) %}
+                                            {% if countryFlag %}
+                                                <span class="flag-emoji">{{ countryFlag|country_flag_emoji }}</span>
+                                            {% endif %}
+                                            {{ profile.nationality }}
+                                        {% endif %}
+                                    </div>
+                                    {% if profile.code %}
+                                        <div class="driver-tag code">{{ profile.code }}</div>
+                                    {% endif %}
+                                    {% if profile.number %}
+                                        <div class="driver-tag number">#{{ profile.number }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="driver-image-container" id="driverImageContainer">
+                                <div class="driver-number">{{ profile.number or profile.code }}</div>
+                                <div class="driver-image-wrapper">
+                                    <img class="driver-image" alt="{{ profile.name }}" data-wiki-url="{{ profile.wikiUrl }}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-container">
+                        <!-- Basic Information -->
+                        <div class="stats-section">
+                            <h5 class="section-title">Basic Information</h5>
+                            <div class="stats-content">
+                                <div class="stat-item">
+                                    <span class="stat-label">Date of Birth:</span>
+                                    <span class="stat-value">{{ profile.dateOfBirth|datetime }}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Career Span:</span>
+                                    <span class="stat-value" id="careerSpan">
+                                        {% if profile.careerStats %}
+                                            {{ profile.careerStats.firstRace }} - {{ profile.careerStats.lastRace }}
+                                        {% else %}
+                                            Loading...
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Career Statistics -->
+                        <div class="stats-section" id="careerStatsSection" {% if not profile.careerStats %}style="display:none;"{% endif %}>
+                            <h5 class="section-title">Career Statistics</h5>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value highlight" id="totalRaces">
+                                        {% if profile.careerStats %}{{ profile.careerStats.totalRaces }}{% else %}0{% endif %}
+                                    </div>
+                                    <div class="stat-label">Races</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value highlight" id="totalWins">
+                                        {% if profile.careerStats %}{{ profile.careerStats.totalWins }}{% else %}0{% endif %}
+                                    </div>
+                                    <div class="stat-label">Wins</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value highlight" id="totalPodiums">
+                                        {% if profile.careerStats %}{{ profile.careerStats.totalPodiums }}{% else %}0{% endif %}
+                                    </div>
+                                    <div class="stat-label">Podiums</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value highlight" id="bestFinish">
+                                        P{% if profile.careerStats %}{{ profile.careerStats.bestFinish }}{% else %}N/A{% endif %}
+                                    </div>
+                                    <div class="stat-label">Best Finish</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Season Details -->
+                    {% if profile.seasons %}
+                    <div class="seasons-section">
+                        <h5 class="section-title">Season Details</h5>
+                        <div class="seasons-grid">
+                            {% for year, stats in profile.seasons.items() %}
+                            <div class="season-card">
+                                <div class="season-year">{{ year }} Season</div>
+                                <div class="season-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Position:</span>
+                                        <span class="stat-value position">P{{ stats.position }}</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Points:</span>
+                                        <span class="stat-value">{{ stats.points }}</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Wins:</span>
+                                        <span class="stat-value">{{ stats.wins }}</span>
+                                    </div>
+                                    {% if stats.constructor %}
+                                    <div class="stat-item constructor">
+                                        <span class="stat-label">Team:</span>
+                                        <span class="stat-value">{{ stats.constructor }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Race Results -->
+                    {% if race_results %}
+                    <div class="race-results-section">
+                        <h5 class="section-title">{{ year }} Season Results</h5>
+                        <div class="race-results-table-container">
+                            <table class="race-results-table responsive-table">
+                                <thead>
+                                    <tr>
+                                        <th>Round</th>
+                                        <th>Race</th>
+                                        <th>Grid</th>
+                                        <th>Position</th>
+                                        <th>Points</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in race_results %}
+                                    <tr>
+                                        <td>{{ result.round }}</td>
+                                        <td>
+                                            <div class="race-name-cell">
+                                                {% if result.countryCode %}
+                                                <span class="flag-emoji">{{ result.countryCode|country_flag_emoji }}</span>
+                                                {% endif %}
+                                                {{ result.raceName }}
+                                            </div>
+                                        </td>
+                                        <td>{{ result.grid }}</td>
+                                        <td class="position-cell">
+                                            {% if result.position == '1' %}
+                                            <span class="position-tag p1">P{{ result.position }}</span>
+                                            {% elif result.position == '2' %}
+                                            <span class="position-tag p2">P{{ result.position }}</span>
+                                            {% elif result.position == '3' %}
+                                            <span class="position-tag p3">P{{ result.position }}</span>
+                                            {% else %}
+                                            <span class="position-tag">P{{ result.position }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ result.points }}</td>
+                                        <td>{{ result.status }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- External Links -->
+                    {% if profile.wikiUrl %}
+                    <div class="external-links">                            <a href="{{ profile.wikiUrl }}" target="_blank" class="waves-effect waves-light btn wiki-btn">
+                                <i class="material-symbols-rounded left">open_in_new</i>
+                                View on Wikipedia
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load driver image and career stats asynchronously
+    document.addEventListener('DOMContentLoaded', function() {
+        const driverId = '{{ profile.id }}';
+        if (!driverId) return;
+
+        // Load driver image
+        const driverImage = document.querySelector('.driver-image');
+        if (driverImage && driverImage.dataset.wikiUrl) {
+            const wikiUrl = driverImage.dataset.wikiUrl;
+            const title = wikiUrl.split('/').pop();
+            
+            // Use Wikipedia's API to get the image
+            const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.originalimage && data.originalimage.source) {
+                        // Use original image and scale it down with URL parameters
+                        let imageUrl = data.originalimage.source;
+                        imageUrl = imageUrl.replace(/\/\d+px-/, '/320px-');
+                        
+                        driverImage.onload = function() {
+                            driverImage.classList.add('loaded');
+                        };
+                        driverImage.src = imageUrl;
+                    }
+                })
+                .catch(error => console.error('Error loading driver image:', error));
+        }
+
+        // Load career stats after a short delay
+        setTimeout(function() {
+            fetch(`/drivers/${driverId}/stats`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.stats) {
+                        // Update career stats
+                        const stats = data.stats;
+                        
+                        // Update career span
+                        const careerSpan = document.getElementById('careerSpan');
+                        if (careerSpan) {
+                            careerSpan.textContent = `${stats.firstRace} - ${stats.lastRace}`;
+                        }
+                        
+                        // Update stats cards
+                        document.getElementById('totalRaces').textContent = stats.totalRaces;
+                        document.getElementById('totalWins').textContent = stats.totalWins;
+                        document.getElementById('totalPodiums').textContent = stats.totalPodiums;
+                        document.getElementById('bestFinish').textContent = `P${stats.bestFinish}`;
+                        
+                        // Show the stats section if it was hidden
+                        const statsSection = document.getElementById('careerStatsSection');
+                        if (statsSection) {
+                            statsSection.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error loading career stats:', error));
+        }, 500);
+    });
+</script>
+
+<style>
+    /* Driver Profile Styling */
+    .driver-profile-card {
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .back-navigation {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background-color: var(--surface0);
+        color: var(--mauve);
+    }
+
+    .btn-back i {
+        margin-right: 8px;
+        font-size: 20px;
+    }
+
+    .driver-navigation {
+        display: flex;
+        gap: 16px;
+    }
+
+    .driver-nav-btn {
+        display: flex;
+        align-items: center;
+        background-color: var(--surface0);
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        color: var(--text);
+        transition: all 0.3s ease;
+    }
+
+    .driver-nav-btn:hover {
+        background-color: var(--mauve);
+        color: var(--base);
+    }
+
+    .driver-nav-btn i {
+        font-size: 20px;
+    }
+
+    .nav-driver-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .nav-label {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    .nav-driver-name {
+        font-weight: 500;
+    }
+
+    .prev-driver .nav-driver-info {
+        margin-left: 8px;
+    }
+
+    .next-driver .nav-driver-info {
+        margin-right: 8px;
+        text-align: right;
+    }
+
+    .driver-header {
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--surface0);
+        padding-bottom: 16px;
+    }
+
+    .driver-header-content {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .driver-image-container {
+        flex-shrink: 0;
+        width: 160px;
+        height: 160px;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: var(--surface0);
+        position: relative;
+        order: 2;
+    }
+
+    .driver-image-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .driver-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .driver-image.loaded {
+        opacity: 1;
+    }
+
+    .driver-number {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 72px;
+        font-weight: 700;
+        color: var(--text);
+        opacity: 0.3;
+        z-index: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .driver-info {
+        flex: 1;
+        order: 1; /* Make sure this appears first */
+    }
+
+    .driver-name {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0 0 16px 0;
+        color: var(--text);
+    }
+
+    .driver-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .driver-tag {
+        padding: 6px 12px;
+        border-radius: 30px;
+        background-color: var(--surface0);
+        color: var(--text);
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .driver-tag.nationality {
+        background-color: var(--blue);
+        color: var(--base);
+    }
+
+    .driver-tag.code {
+        background-color: var(--mauve);
+        color: var(--base);
+    }
+
+    .driver-tag.number {
+        background-color: var(--red);
+        color: var(--base);
+    }
+
+    .flag-emoji {
+        margin-right: 8px;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--mauve);
+    }
+
+    .stats-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px;
+        border-radius: 4px;
+    }
+
+    .stat-item:nth-child(odd) {
+        background-color: var(--surface0);
+    }
+
+    .stat-label {
+        font-weight: 500;
+        color: var(--subtext0);
+        font-size: 0.9rem;
+    }
+
+    .stat-value {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 1.1rem;
+    }
+
+    .stat-value.position {
+        color: var(--mauve);
+        font-weight: 700;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card {
+        background-color: var(--surface0);
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .highlight {
+        color: var(--mauve);
+    }
+
+    .seasons-section {
+        margin-top: 32px;
+    }
+
+    .seasons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .season-card {
+        background-color: var(--surface0);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .season-year {
+        background-color: var(--mauve);
+        color: var(--base);
+        padding: 10px 16px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .season-stats {
+        padding: 16px;
+    }
+
+    .season-stats .stat-item {
+        background-color: transparent;
+        padding: 4px 0;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--surface1);
+    }
+
+    .season-stats .stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .season-stats .stat-label {
+        font-size: 0.9rem;
+    }
+
+    .season-stats .stat-value {
+        font-size: 1rem;
+    }
+
+    .external-links {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .wiki-btn {
+        background-color: var(--blue);
+    }
+
+    .wiki-btn:hover {
+        background-color: var(--sapphire);
+    }
+
+    /* Race Results Table */
+    .race-results-section {
+        margin-top: 32px;
+    }
+
+    .race-results-table-container {
+        overflow-x: auto;
+        margin-top: 16px;
+        background-color: var(--surface0);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .race-results-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .race-results-table th,
+    .race-results-table td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--surface1);
+    }
+
+    .race-results-table th {
+        background-color: var(--surface1);
+        color: var(--mauve);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .race-results-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .race-results-table tr:hover td {
+        background-color: var(--surface1);
+    }
+
+    .race-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .position-tag {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background-color: var(--surface1);
+        font-weight: 600;
+    }
+
+    .position-tag.p1 {
+        background-color: #FFD700;
+        color: #000;
+    }
+
+    .position-tag.p2 {
+        background-color: #C0C0C0;
+        color: #000;
+    }
+
+    .position-tag.p3 {
+        background-color: #CD7F32;
+        color: #000;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .driver-name {
+            font-size: 1.8rem;
+        }
+
+        .driver-header-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .driver-image-container {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 16px;
+        }
+
+        .driver-tags {
+            justify-content: center;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .race-results-table th,
+        .race-results-table td {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}

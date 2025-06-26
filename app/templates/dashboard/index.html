@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m8">
+        <!-- Season Selector -->
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title-group">
+                    <div>
+                        <span class="card-title">Welcome to F1nsight</span>
+                        <p>Your Formula 1 data dashboard</p>
+                    </div>
+                    <div class="season-select-wrapper compact">
+                        <label for="seasonSelector" class="season-select-label">Season:</label>
+                        <select id="seasonSelector" onchange="window.location.href='?year='+this.value">
+                            {% for season in available_seasons %}
+                                <option value="{{ season }}" {% if selected_year == season|int %}selected{% endif %}>{{ season }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mini Leaderboard -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <span class="material-symbols-rounded" style="vertical-align: middle;">leaderboard</span>
+                    Top Drivers {{ selected_year }}
+                </span>
+                
+                <table class="striped highlight responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Driver</th>
+                            <th>Team</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for driver in standings[:5] %}
+                        <tr>
+                            <td>{{ driver.position }}</td>
+                            <td>
+                                <a href="/standings/?year={{ selected_year }}" class="driver-link">
+                                    {{ driver.driver }}
+                                </a>
+                            </td>
+                            <td>{{ driver.constructor }}</td>
+                            <td><strong>{{ driver.points }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-action">
+                <a href="/standings/?year={{ selected_year }}" class="btn waves-effect waves-light" style="color: var(--mantle)">
+                    <span class="material-symbols-rounded">leaderboard</span>
+                    Full Standings
+                </a>
+            </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Quick Access</span>
+                <div class="collection">
+                    <a href="/dashboard/compare" class="collection-item">
+                        <span class="material-symbols-rounded" style="vertical-align: middle; margin-right: 8px;">compare</span>
+                        Compare Drivers
+                    </a>
+                    <a href="/dashboard/races?year={{ selected_year }}" class="collection-item">
+                        <span class="material-symbols-rounded" style="vertical-align: middle; margin-right: 8px;">event</span>
+                        Race Calendar & Results
+                    </a>
+                    <a href="/dashboard/news" class="collection-item">
+                        <span class="material-symbols-rounded" style="vertical-align: middle; margin-right: 8px;">feed</span>
+                        Latest F1 News
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m4">
+        <!-- User Profile Card -->
+        <div class="card profile-card">
+            <div class="card-content">
+                <span class="card-title">Profile</span>
+                <a href="/dashboard/profile" class="profile-info">
+                    <span class="material-symbols-rounded profile-icon">account_circle</span>
+                    <div class="profile-details">
+                        <p class="username">{{ current_user.username }}</p>
+                        <p class="email">{{ current_user.email }}</p>
+                    </div>
+                    <span class="material-symbols-rounded profile-arrow">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Random Driver Profile -->
+        {% if random_driver %}
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <span class="material-symbols-rounded" style="vertical-align: middle;">casino</span>
+                    Random Driver Spotlight
+                </span>
+                
+                <div class="random-driver-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 15px;">
+                    {% if random_driver.url %}
+                    <div class="driver-image-container" style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin-bottom: 15px;">
+                        <img src="{{ random_driver.url }}" alt="{{ random_driver.driver }}" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                    
+                    <h5 class="driver-name" style="margin: 10px 0;">{{ random_driver.driver }}</h5>
+                    
+                    <div class="driver-details" style="width: 100%; margin-top: 10px;">
+                        <p><strong>Team:</strong> {{ random_driver.constructor }}</p>
+                        <p><strong>Position:</strong> {{ random_driver.position }}</p>
+                        <p><strong>Points:</strong> {{ random_driver.points }}</p>
+                        {% if random_driver.nationality %}
+                        <p><strong>Nationality:</strong> {{ random_driver.nationality }}</p>
+                        {% endif %}
+                        {% if random_driver.dateOfBirth %}
+                        <p><strong>Born:</strong> {{ random_driver.dateOfBirth }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-action">
+                <a href="/drivers/drivers/{{ random_driver.driverId if random_driver.driverId is defined else '' }}?year={{ selected_year }}" class="btn waves-effect waves-light" style="color: var(--mantle)">
+                    <span class="material-symbols-rounded">person</span>
+                    View Profile
+                </a>
+                <a href="{{ url_for('dashboard.index') }}?year={{ selected_year }}" class="btn-flat waves-effect">
+                    <span class="material-symbols-rounded">refresh</span>
+                    New Random
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Constructor Standings Preview -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <span class="material-symbols-rounded" style="vertical-align: middle;">business</span>
+                    Top Teams {{ selected_year }}
+                </span>
+                
+                <ul class="collection">
+                    {% for constructor in constructor_standings[:3] %}
+                    <li class="collection-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>{{ constructor.position }}. {{ constructor.constructor }}</span>
+                            <span class="badge">{{ constructor.points }} pts</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-action">
+                <a href="/standings/?year={{ selected_year }}" class="btn-flat waves-effect">
+                    <span class="material-symbols-rounded">arrow_forward</span>
+                    See All Teams
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize season selector with specific options
+    var seasonSelector = document.querySelector('#seasonSelector');
+    if (seasonSelector) {
+        M.FormSelect.init(seasonSelector, {
+            dropdownOptions: {
+                container: document.body,
+                constrainWidth: false,
+                coverTrigger: false,
+                hover: false
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

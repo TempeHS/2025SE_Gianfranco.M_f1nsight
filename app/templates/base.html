@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html data-theme="default" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} | f1nsight</title>
+
+    <!-- FAVICON.SVG IMPLEMENTATION-->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/speed.svg') }}">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" as="style">
+    <link rel="preload" href="{{ url_for('static', filename='css/style.css') }}" as="style">
+    <link rel="preload" href="{{ url_for('static', filename='css/themes/ferrari.css') }}" as="style">
+    <link rel="preload" href="{{ url_for('static', filename='css/themes/mclaren.css') }}" as="style">
+
+    <!-- GOOGLE'S MATERIAL DESIGN -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
+    <!-- THEME STYLES -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/ferrari.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/mclaren.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/switcher.css') }}">
+
+    <!-- CUSTOM CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/compare.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Navigation Management (load this first) -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+
+    <!-- DEFER NON-CRITICAL JAVASCRIPT -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/compare.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
+
+    <!-- CHART.JS (without source maps) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- Prevent FOUC -->
+    <script>
+        // Hide content until everything is loaded
+        document.documentElement.style.visibility = 'hidden';
+        window.addEventListener('load', function() {
+            document.documentElement.style.visibility = 'visible';
+        });
+    </script>
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-car"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span class="material-symbols-rounded">menu</span>
+    </button>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar-container">
+        <nav class="sidebar">
+            <!-- Mobile Close Button -->
+            <button class="mobile-close-btn" id="mobileCloseBtn">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+            
+            <!-- LOGO -->
+            <div class="sidebar-header">
+                <a href="{{ url_for('home.index') }}" class="brand-logo">
+                    <span class="material-symbols-rounded">speed</span>
+                    <span class="brand-text">f1nsight</span>
+                </a>
+                <button class="sidebar-toggle">
+                    <span class="material-symbols-rounded">menu</span>
+                </button>
+            </div>
+
+            <ul class="sidebar-nav">
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="{{ url_for('dashboard.index') }}">
+                            <span class="material-symbols-rounded">dashboard</span>
+                            <span class="nav-text">dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('standings.index') }}">
+                            <span class="material-symbols-rounded">leaderboard</span>
+                            <span class="nav-text">standings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.compare') }}">
+                            <span class="material-symbols-rounded">compare_arrows</span>
+                            <span class="nav-text">compare</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.news') }}">
+                            <span class="material-symbols-rounded">feed</span>
+                            <span class="nav-text">news</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.races') }}">
+                            <span class="material-symbols-rounded">sports_score</span>
+                            <span class="nav-text">race database</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('drivers.search') }}">
+                            <span class="material-symbols-rounded">person_search</span>
+                            <span class="nav-text">driver profiles</span>
+                        </a>
+                    </li>
+                    <li class="nav-spacer"></li>
+                    <li>
+                        <a href="{{ url_for('dashboard.profile') }}">
+                            <span class="material-symbols-rounded">person</span>
+                            <span class="nav-text">profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('auth.logout') }}">
+                            <span class="material-symbols-rounded">logout</span>
+                            <span class="nav-text">logout</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-spacer"></li>
+                    <li>
+                        <a href="{{ url_for('auth.login') }}">
+                            <span class="material-symbols-rounded">login</span>
+                            <span class="nav-text">login</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('auth.register') }}">
+                            <span class="material-symbols-rounded">person_add</span>
+                            <span class="nav-text">register</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <!-- END SIDEBAR -->
+
+    <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="card-panel message-panel">
+                        <span class="material-symbols-rounded">info</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- MOBILE JS-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+
+        const loader = document.querySelector('.page-loader');
+        const mainContent = document.querySelector('main');
+        
+        document.querySelectorAll('a').forEach(link => {
+            if (link.getAttribute('target') === '_blank' || 
+                link.getAttribute('download') ||
+                link.getAttribute('href').startsWith('http')) {
+                return;
+            }
+
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                
+                loader.classList.add('active');
+                mainContent.classList.add('page-transition');
+                
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 300);
+            });
+        });
+
+        // HIDE
+        window.addEventListener('load', () => {
+            loader.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

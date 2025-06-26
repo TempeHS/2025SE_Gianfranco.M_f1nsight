@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Historical Race Data</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body class="container">
+  <h3>Historical Race Results</h3>
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Grand Prix</th>
+        <th>Driver</th>
+        <th>Position</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for race in races %}
+      <tr>
+        <td>{{ race.year }}</td>
+        <td>{{ race.grand_prix }}</td>
+        <td>{{ race.driver }}</td>
+        <td>{{ race.position }}</td>
+        <td>{{ race.time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

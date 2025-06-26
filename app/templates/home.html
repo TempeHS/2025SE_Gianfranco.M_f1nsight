@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <!-- HERO SECTION -->
+    <div class="hero-section">
+        <h1 class="main-title">f1nsight</h1>
+        <p class="subtitle">a flask website for all your f1 data needs</p>
+        
+        <div class="auth-buttons">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard.index') }}" class="btn waves-effect waves-light">
+                <span class="material-symbols-rounded">dashboard</span>
+                dashboard
+            </a>
+            {% else %}
+            <a href="/auth/login" class="btn waves-effect waves-light">
+                <span class="material-symbols-rounded">login</span>
+                login
+            </a>
+            <a href="/auth/register" class="btn waves-effect waves-light">
+                <span class="material-symbols-rounded">person_add</span>
+                register
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- SCROLL INDICATOR -->
+        <div class="scroll-indicator">
+            <span class="material-symbols-rounded pulse">expand_more</span>
+        </div>
+    </div>
+
+    <!-- CONTENT SECTIONS -->
+    <div class="info-section">
+        <h2>what is f1nsight?</h2>
+        <p>f1nsight is a data archive and dashboard for f1 enthusiasts built on a secure architecture, and supported by flask</p>
+    </div>
+
+    <div class="info-section">
+        <h2>features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="material-symbols-rounded">analytics</span>
+                <h3>data analysis</h3>
+                <p>compare and contrast a range of data</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">person_search</span>
+                <h3>driver profiles</h3>
+                <p>explore detailed driver statistics and history</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">history</span>
+                <h3>historical data</h3>
+                <p>access the world of formula 1</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">sports_score</span>
+                <h3>race database</h3>
+                <p>comprehensive archive of race results</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">feed</span>
+                <h3>f1 news</h3>
+                <p>latest updates from the world of formula 1</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-rounded">compare_arrows</span>
+                <h3>driver comparison</h3>
+                <p>compare performance between drivers</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

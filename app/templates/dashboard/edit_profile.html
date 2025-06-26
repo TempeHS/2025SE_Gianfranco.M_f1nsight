@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}edit profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div class="card profile-page-card">
+            <div class="card-content">
+                <span class="card-title">edit profile</span>
+                <div id="edit-profile-messages">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert {{ category }}">
+                                    <p>{{ message }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                <form id="edit-profile-form" method="POST" action="{{ url_for('dashboard.update_profile') }}">
+                    <div class="input-field">
+                        <input id="new-username" name="new_username" type="text" value="{{ current_user.username }}" required>
+                        <label for="new-username" class="active">New Username</label>
+                    </div>
+                    <div class="input-field">
+                        <input id="password" name="password" type="password" required>
+                        <label for="password">Current Password</label>
+                        <span class="helper-text">Enter your current password to verify your identity</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn waves-effect waves-light">Save Changes</button>
+                        <a href="{{ url_for('dashboard.profile') }}" class="btn-flat waves-effect">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editProfileForm = document.getElementById('edit-profile-form');
+        
+        editProfileForm.addEventListener('submit', function(e) {
+            // Regular form submission, no need for AJAX here
+        });
+    });
+</script>
+
+<style>
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+    
+    .alert.success {
+        background-color: #dff0d8;
+        border: 1px solid #d0e9c6;
+        color: #3c763d;
+    }
+    
+    .alert.error {
+        background-color: #f2dede;
+        border: 1px solid #ebcccc;
+        color: #a94442;
+    }
+    
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .helper-text {
+        color: #757575;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
