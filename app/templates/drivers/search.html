@@ -27,16 +27,32 @@
                         </form>
                     </div>
 
+                    <!-- LOADING SPINNER -->
+                    <div id="loadingSpinner" class="loading-spinner"></div>
+
                     <script>
+                        const searchForm = document.getElementById('searchForm');
+                        const loadingSpinner = document.getElementById('loadingSpinner');
+
+                        function showLoading() {
+                            loadingSpinner.classList.add('show');
+                        }
+
+                        function hideLoading() {
+                            loadingSpinner.classList.remove('show');
+                        }
+
                         document.getElementById('yearSelect').addEventListener('change', function() {
-                            document.getElementById('searchForm').submit();
+                            showLoading();
+                            searchForm.submit();
                         });
                         
                         document.getElementById('searchQuery').addEventListener('input', debounce(function() {
-                            document.getElementById('searchForm').submit();
-                        }, 300));
+                            showLoading();
+                            searchForm.submit();
+                        }, 900));
 
-                        // Debounce function to prevent too many requests while typing
+                        // DEBOUNCE FUNCTION
                         function debounce(func, wait) {
                             let timeout;
                             return function executedFunction(...args) {
@@ -48,6 +64,11 @@
                                 timeout = setTimeout(later, wait);
                             };
                         }
+
+                        // Hide loading spinner when the page loads (in case of back button)
+                        window.addEventListener('pageshow', function() {
+                            hideLoading();
+                        });
                     </script>
 
                     {% if drivers %}
@@ -59,24 +80,31 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="drivers-grid">
                             {% for driver in drivers %}
-                            <div class="col s12 m6 l4">
+                            <div class="driver-card-container">
                                 <div class="card">
                                     <div class="card-content">
                                         <span class="card-title">{{ driver.name }}</span>
-                                        {% if driver.position %}
-                                            <div class="chip position">
-                                                P{{ driver.position }} - {{ driver.points }} pts
-                                            </div>
-                                        {% endif %}
-                                        {% if driver.constructor %}
-                                            <div class="chip constructor">
-                                                {{ driver.constructor }}
-                                            </div>
-                                        {% endif %}
+                                        <div class="chip-container">
+                                            {% if driver.position %}
+                                                <div class="chip position">
+                                                    P{{ driver.position }} - {{ driver.points }} pts
+                                                </div>
+                                            {% endif %}
+                                            {% if driver.constructor %}
+                                                <div class="chip constructor">
+                                                    {{ driver.constructor }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                         <p>
-                                            <strong>Nationality:</strong> {{ driver.nationality }}<br>
+                                            <strong>Nationality:</strong> 
+                                            {% set countryFlag = get_country_code(driver.nationality) %}
+                                            {% if countryFlag %}
+                                                <span class="flag-emoji">{{ countryFlag|country_flag_emoji }}</span>
+                                            {% endif %}
+                                            {{ driver.nationality }}<br>
                                             {% if driver.code %}
                                                 <strong>Code:</strong> {{ driver.code }}<br>
                                             {% endif %}
@@ -114,10 +142,147 @@
 </div>
 
 <script>
-document.getElementById('searchQuery').addEventListener('input', function(e) {
-    if (e.target.value) {
-        document.getElementById('searchForm').submit();
-    }
-});
+// Remove the duplicate event listener that was causing immediate refresh
+// The debounced event listener above is sufficient
 </script>
+
+<style>
+    /* Driver Search Styling */
+    .year-select {
+        background-color: var(--surface0) !important;
+        color: var(--text) !important;
+        border: 1px solid var(--surface0) !important;
+        border-radius: 8px !important;
+        height: 40px !important;
+        font-family: "Fira Code", monospace !important;
+        padding: 0 10px !important;
+        width: 100% !important;
+    }
+    
+    .year-select:focus {
+        outline: none !important;
+        border-color: var(--mauve) !important;
+        box-shadow: 0 0 0 2px var(--mauve) !important;
+    }
+    
+    .year-select option {
+        background-color: var(--mantle) !important;
+        color: var(--text) !important;
+        padding: 8px !important;
+    }
+    
+    .loading-spinner {
+        display: none;
+        width: 40px;
+        height: 40px;
+        margin: 20px auto;
+        border: 3px solid var(--surface0);
+        border-top: 3px solid var(--mauve);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    .loading-spinner.show {
+        display: block;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Fixed Driver Grid Layout */
+    .drivers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        width: 100%;
+    }
+    
+    .drivers-grid .col {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .drivers-grid .card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        border-radius: 8px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .drivers-grid .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .drivers-grid .card-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .drivers-grid .card-title {
+        font-weight: 600;
+        color: var(--mauve);
+    }
+    
+    .drivers-grid .card-content p {
+        flex-grow: 1;
+        margin-top: 10px;
+    }
+    
+    .drivers-grid .chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 8px 0;
+    }
+    
+    .drivers-grid .chip {
+        margin: 0;
+        border-radius: 16px;
+        background-color: var(--surface0);
+        color: var(--text);
+        font-weight: 500;
+        padding: 0 12px;
+        height: 28px;
+        line-height: 28px;
+    }
+    
+    .drivers-grid .chip.position {
+        background-color: var(--mauve);
+        color: var(--mantle);
+    }
+    
+    .drivers-grid .chip.constructor {
+        background-color: var(--blue);
+        color: var(--mantle);
+    }
+    
+    .drivers-grid .card-action {
+        border-top: 1px solid var(--surface0);
+        padding: 12px 16px;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    
+    .drivers-grid .card-action a {
+        color: var(--mauve);
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+    
+    .drivers-grid .card-action a:hover {
+        color: var(--pink);
+    }
+    
+    .flag-emoji {
+        margin-right: 5px;
+    }
+</style>
 {% endblock %}

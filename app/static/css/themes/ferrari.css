@@ -1,71 +1,54 @@
-/* THEME VARIABLES */
-:root {
-  /* COLOUR PALETTE FOR CATPPUCCIN MOCHA */
-  --rosewater: #f5e0dc;
-  --flamingo: #f2cdcd;
-  --pink: #f5c2e7;
-  --mauve: #cba6f7;
-  --red: #f38ba8;
-  --maroon: #eba0ac;
-  --peach: #fab387;
-  --yellow: #f9e2af;
-  --green: #a6e3a1;
-  --teal: #94e2d5;
-  --sky: #89dceb;
-  --sapphire: #74c7ec;
-  --blue: #89b4fa;
-  --lavender: #b4befe;
-  --text: #cdd6f4;
-  --subtext1: #bac2de;
-  --subtext0: #a6adc8;
-  --overlay2: #9399b2;
-  --overlay1: #7f849c;
-  --overlay0: #6c7086;
-  --surface2: #585b70;
-  --surface1: #45475a;
-  --surface0: #313244;
-  --base: #1e1e2e;
-  --mantle: #181825;
-  --crust: #11111b;
+/*
+  Ferrari Theme for f1nsight
+  Overrides the default Catppuccin Mocha theme.
+  Uses Ferrari's iconic colors: Rosso Corsa (Red), Giallo Modena (Yellow), White, and Black.
+*/
+:root[data-theme="ferrari"] {
+    /* Base Palette: Black, Grey, White */
+    --base: #111111;       /* Main page background - was #1e1e2e */
+    --mantle: #1a1a1a;     /* Component background (cards, sidebar) - was #181825 */
+    --crust: #0d0d0d;      /* Darkest background layer - was #11111b (keeping it) */
+    --surface0: #1a1a1a;   /* Surface layers for contrast */
+    --surface1: #242424;
+    --surface2: #333333;
+
+    /* Text - White & Off-White Palette */
+    --text: #ffffff;       /* Primary text - was #cdd6f4 */
+    --subtext1: #e0e0e0;   /* Lighter grey text */
+    --subtext0: #c0c0c0;   /* Darker grey text */
+
+    /* Overlays - for hover states, modals, etc. */
+    --overlay2: rgba(220, 0, 0, 0.2);
+    --overlay1: rgba(220, 0, 0, 0.15);
+    --overlay0: rgba(220, 0, 0, 0.1);
+    --shadow: rgba(220, 0, 0, 0.3);
+
+    /*
+      Accent Colors - This is the key part.
+      Mapping Catppuccin's colorful palette to Ferrari's strict colors.
+      This ensures no purple, blue, or green "leaks" into the theme.
+    */
+
+    /* Purples & Pinks -> Ferrari Red */
+    --rosewater: #DC0000;   /* Lighter red for things like warnings. */
+    --flamingo: #DC0000;    /* Another light red. */
+    --pink: #DC0000;        /* A slightly brighter red for variety. */
+    --mauve: #DC0000;       /* Main accent color, now Ferrari Red */
+    --red: #DC0000;         /* Error messages, etc. */
+    --maroon: #B80000;      /* Darker Red for hovers */
+
+    /* Yellows & Peaches -> Ferrari Yellow */
+    --peach: #FFD700;       /* Ferrari Yellow */
+    --yellow: #FFD700;      /* Ferrari Yellow */
+
+    /* Greens, Teals, Blues -> Neutral or Red/Yellow */
+    --green: #009000;       /* Keeping green for success messages. */
+    --teal: #DC0000;        /* Remapped to red. */
+    --sky: #DC0000;         /* Remapped to red. */
+    --sapphire: #DC0000;    /* Remapped to red. */
+    --blue: #DC0000;        /* Remapped to red. */
 }
 
-/* PERFORMANCE OPTIMIZATIONS */
-* {
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* HARDWARE ACCELERATION */
-.sidebar-container,
-.card,
-.btn,
-.collapse-toggle,
-.loading-spinner {
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-/* REDUCE PAINT OPERATIONS */
-.sidebar,
-.card,
-.btn,
-.loading-overlay {
-  contain: content;
-}
-
-/* OPTIMIZE ANIMATIONS */
-@media screen and (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
 
 /* BASE STYLES */
 body {
@@ -80,7 +63,7 @@ body {
 body.sidebar-collapsed { margin-left: 64px; }
 
 /* LAYOUT COMPONENTS */
-/* CARD STYLES */
+/* Unified Card Styles */
 .card, .profile-card, .profile-page-card, .feature-card {
   background-color: var(--mantle);
   border-radius: 12px;
@@ -91,7 +74,7 @@ body.sidebar-collapsed { margin-left: 64px; }
 }
 
 .card-content { 
-  color: var(--text);
+  color: var(--mantle);
   padding: 16px !important;
 }
 
@@ -113,6 +96,10 @@ body.sidebar-collapsed { margin-left: 64px; }
 
 .card-action a:hover {
   color: var(--pink);
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating) {
+    color: #DC0000 !important; /* Override Materialize default orange with Ferrari Red */
 }
 
 .card-title {
@@ -250,7 +237,7 @@ body.sidebar-collapsed { margin-left: 64px; }
   text-align: center;
 }
 
-/* INPUT STYLES */
+/* Unified Input Styles */
 .input-field {
   position: relative;
 }
@@ -275,7 +262,7 @@ body.sidebar-collapsed { margin-left: 64px; }
 
 
 
-/* BUTTON & ICON STYLES */
+/* Combined Button & Icon Styles */
 .btn, .collapse-toggle {
   background-color: var(--mauve);
   border-radius: 20px;
@@ -318,7 +305,7 @@ body.sidebar-collapsed { margin-left: 64px; }
   background-color: var(--lavender);
 }
 
-/* ICON STYLES */
+/* Combined Icon Styles */
 .constructor-icon, .driver-number {
   height: 24px;
   width: 24px;
@@ -327,13 +314,12 @@ body.sidebar-collapsed { margin-left: 64px; }
   margin-right: 8px;
 }
 
-/* TABLE STYLES */
+/* Unified Table Styles */
 .standings-table {
-  background-color: var(--mantle); /* MATCH CARD BACKGROUND */
-  color: var(--text); /* ENSURE TEXT COLOR CONSISTENCY */
-  border-radius: 12px; /* MATCH CARD RADIUS */
-  padding: 16px; /* ADD CONSISTENT PADDING */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* MATCH CARD SHADOW */
+  color: var(--text); /* Ensure text color matches */
+  border-radius: 12px; /* Match card border radius */
+  padding: 16px; /* Add padding for consistency */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Match card shadow */
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--overlay0) var(--base);
@@ -426,7 +412,7 @@ body.sidebar-collapsed { margin-left: 64px; }
   }
 }
 
-/* DEPRECATED STYLES - KEEP FOR REFERENCE */
+/* OLD STYLES REMOVED */
 .sidenav {
   background-color: var(--mantle);
 }

@@ -1,0 +1,155 @@
+/*
+  McLaren Theme for f1nsight
+  Overrides the default Catppuccin Mocha theme.
+  Uses McLaren's iconic colors: Papaya Orange, Blue, Black, and White.
+*/
+:root[data-theme="mclaren"] {
+    /* Base Palette: Black, Grey, White */
+    --base: #0e1012;       /* Main page background - dark charcoal */
+    --mantle: #181c1e;     /* Component background (cards, sidebar) */
+    --crust: #0a0c0e;      /* Darkest background layer */
+    --surface0: #1c2022;   /* Surface layers for contrast */
+    --surface1: #242a2e;
+    --surface2: #2c3238;
+
+    /* Text - White & Off-White Palette */
+    --text: #ffffff;       /* Primary text */
+    --subtext1: #e0e0e0;   /* Lighter grey text */
+    --subtext0: #c0c0c0;   /* Darker grey text */
+
+    /* Overlays - for hover states, modals, etc. */
+    --overlay2: rgba(255, 135, 0, 0.2);
+    --overlay1: rgba(255, 135, 0, 0.15);
+    --overlay0: rgba(255, 135, 0, 0.1);
+    --shadow: rgba(0, 0, 0, 0.4);
+
+    /*
+      Accent Colors - McLaren's distinctive Papaya Orange and Blue.
+      This ensures the theme is immediately recognizable as McLaren.
+    */
+
+    /* Purples & Pinks -> McLaren Papaya Orange */
+    --rosewater: #FF8700;   /* Lighter orange */
+    --flamingo: #FF8700;    /* McLaren Papaya Orange */
+    --pink: #FF8700;        /* McLaren Papaya Orange */
+    --mauve: #FF8700;       /* Main accent color, McLaren Papaya */
+    --red: #FF8700;         /* Error messages - still orange */
+    --maroon: #e67a00;      /* Darker Orange for hovers */
+
+    /* Yellows & Peaches -> McLaren Orange variations */
+    --peach: #FF9A33;       /* Lighter Papaya */
+    --yellow: #FFAD5C;      /* Even lighter Papaya */
+
+    /* Greens, Teals, Blues -> McLaren Blue */
+    --green: #00A78E;       /* Success messages in teal */
+    --teal: #00A78E;        /* McLaren teal accent */
+    --sky: #0090D4;         /* McLaren blue */
+    --sapphire: #0090D4;    /* McLaren blue */
+    --blue: #0090D4;        /* McLaren blue */
+    --lavender: #0090D4;    /* McLaren blue */
+    
+    /* Additional variables */
+    --border: var(--surface0);
+    --hover: var(--overlay0);
+    --active: var(--overlay1);
+    --primary: var(--mauve);
+}
+
+/* Custom Card Styling for McLaren Theme */
+:root[data-theme="mclaren"] .card {
+  border-left: 3px solid var(--mauve);
+}
+
+:root[data-theme="mclaren"] .card-title {
+  color: var(--mauve);
+  font-weight: 600;
+}
+
+:root[data-theme="mclaren"] .btn {
+  background-color: var(--mauve);
+  color: var(--base);
+}
+
+:root[data-theme="mclaren"] .btn:hover {
+  background-color: var(--maroon);
+}
+
+/* McLaren-specific Table Styling */
+:root[data-theme="mclaren"] table.striped > tbody > tr:nth-child(odd) {
+  background-color: rgba(255, 135, 0, 0.05);
+}
+
+:root[data-theme="mclaren"] table.highlight > tbody > tr:hover {
+  background-color: rgba(255, 135, 0, 0.1);
+}
+
+/* McLaren-specific Sidebar Styling */
+:root[data-theme="mclaren"] .sidebar {
+  background: linear-gradient(180deg, var(--mantle) 0%, var(--base) 100%);
+  border-right: 1px solid var(--surface0);
+}
+
+:root[data-theme="mclaren"] .sidebar-nav li a:hover {
+  background-color: rgba(255, 135, 0, 0.1);
+}
+
+:root[data-theme="mclaren"] .sidebar-nav li a.active {
+  background-color: rgba(255, 135, 0, 0.15);
+  border-left: 3px solid var(--mauve);
+}
+
+/* McLaren-specific Input Styling */
+:root[data-theme="mclaren"] input:focus {
+  border-bottom: 1px solid var(--mauve) !important;
+  box-shadow: 0 1px 0 0 var(--mauve) !important;
+}
+
+:root[data-theme="mclaren"] .input-field .prefix.active {
+  color: var(--mauve);
+}
+
+/* McLaren-specific Links */
+:root[data-theme="mclaren"] .card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating) {
+  color: var(--mauve) !important;
+}
+
+:root[data-theme="mclaren"] .card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating):hover {
+  color: var(--blue) !important;
+}
+
+/* McLaren-specific Message Panels */
+:root[data-theme="mclaren"] .message-panel .material-symbols-rounded {
+  color: var(--blue);
+}
+
+:root[data-theme="mclaren"] .card-panel.info-panel .material-symbols-rounded {
+  color: var(--mauve) !important;
+}
+
+/* McLaren-specific Feature Cards */
+:root[data-theme="mclaren"] .feature-card .material-symbols-rounded {
+  color: var(--blue);
+}
+
+:root[data-theme="mclaren"] .feature-card h3 {
+  color: var(--mauve);
+}
+
+/* McLaren-specific Profile Styles */
+:root[data-theme="mclaren"] .profile-icon,
+:root[data-theme="mclaren"] .profile-page-icon {
+  color: var(--mauve);
+}
+
+:root[data-theme="mclaren"] .profile-section h3 {
+  color: var(--mauve);
+}
+
+:root[data-theme="mclaren"] .profile-info:hover .profile-arrow {
+  color: var(--mauve);
+}
+
+/* McLaren Theme Chip */
+.theme-option-color.mclaren {
+  background: linear-gradient(135deg, #FF8700 50%, #0090D4 50%);
+}

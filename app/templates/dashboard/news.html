@@ -58,17 +58,17 @@
                             </p>
                         </a>
                     </div>
-                    <div class="card-action" style="background-color: #1e1e2e; padding: 12px; border-radius: 0 0 2px 2px;">
+                    <div class="card-action" style="background-color: var(--mantle); padding: 12px; border-radius: 0 0 2px 2px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <small style="font-size: 0.8rem;">{{ article.source.name }}</small>
-                                <div style="width: 3px; height: 3px; background-color: #6c7086; border-radius: 50%;"></div>
+                                <div style="width: 3px; height: 3px; background-color: var(--overlay0); border-radius: 50%;"></div>
                                 <small style="font-size: 0.8rem;">{{ article.publishedAt|datetime }}</small>
                             </div>
                             <a href="{{ article.url }}" target="_blank" class="btn waves-effect waves-light"
-                                style="background-color: #cba6f7; height: 28px; line-height: 28px; padding: 0 10px;">
-                                <span style="color: #1e1e2e; text-transform: lowercase; font-size: 0.85rem;">read more</span>
-                                <i class="material-symbols-rounded right" style="margin-left: 4px; font-size: 18px; color: #1e1e2e;">arrow_forward</i>
+                                style="background-color: var(--mauve); height: 28px; line-height: 28px; padding: 0 10px;">
+                                <span style="color: var(--base); text-transform: lowercase; font-size: 0.85rem;">read more</span>
+                                <i class="material-symbols-rounded right" style="margin-left: 4px; font-size: 18px; color: var(--base);">arrow_forward</i>
                             </a>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
     {% if news|length >= 30 %}
     <div class="row center-align" style="margin-top: 16px;">
         <button id="loadMoreBtn" class="btn waves-effect waves-light" 
-                style="background-color: #1e1e2e; text-transform: none;">
+                style="background-color: var(--mantle); text-transform: none;">
             <span style="text-transform: lowercase;">load more</span>
             <i class="material-symbols-rounded right" style="margin-left: 4px;">expand_more</i>
         </button>
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // SAVE URL STATE
                 const url = new URL(window.location.href);
-                url.searchParams.set('page', currentPage);
+                url.searchParams.set('page', currentPage.toString());
                 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Network response was not ok');

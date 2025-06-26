@@ -1,0 +1,167 @@
+.driver-selectors {
+    width: 100%;
+    margin: 2rem 0;
+}
+
+.selector-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.custom-select {
+    position: relative;
+    width: 300px;
+    background: var(--mantle);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    background: var(--surface0);
+    transition: background-color 0.2s ease;
+}
+
+.select-header:hover {
+    background: var(--surface1);
+}
+
+.selected-driver {
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.select-search {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--surface1);
+    display: none;
+}
+
+.select-search input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--surface1);
+    background: var(--mantle);
+    color: var(--text);
+    border-radius: 4px;
+    font-family: "Fira Code", monospace;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.select-search input:focus {
+    outline: none;
+    background: var(--surface0);
+    border-color: var(--mauve);
+}
+
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--mantle);
+    border-radius: 0 0 8px 8px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    z-index: 1000;
+}
+
+.custom-select.open .select-search {
+    display: block;
+}
+
+.custom-select.open .select-options {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--surface1);
+    border-top: none;
+}
+
+.select-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.select-option:hover {
+    background: var(--surface0);
+}
+
+.select-option.selected {
+    background: var(--mauve);
+    color: var(--base);
+}
+
+/* FERRARI THEME OVERRIDES */
+:root[data-theme='ferrari'] .custom-select {
+    background: #000000;
+}
+
+:root[data-theme='ferrari'] .select-header {
+    background: #1a1a1a;
+}
+
+:root[data-theme='ferrari'] .select-header:hover {
+    background: #2a2a2a;
+}
+
+:root[data-theme='ferrari'] .select-search input {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+}
+
+:root[data-theme='ferrari'] .select-search input:focus {
+    background: #2a2a2a;
+    border-color: #DC0000;
+    box-shadow: 0 0 0 1px #DC0000;
+}
+
+:root[data-theme='ferrari'] .select-search input::placeholder {
+    color: #666666;
+}
+
+:root[data-theme='ferrari'] .select-options {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+:root[data-theme='ferrari'] .select-option:hover {
+    background: #2a2a2a;
+}
+
+:root[data-theme='ferrari'] .select-option.selected {
+    background: #ff2800;
+    color: #ffffff;
+}
+
+/* SCROLLBAR STYLING */
+.select-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.select-options::-webkit-scrollbar-track {
+    background: var(--mantle);
+}
+
+.select-options::-webkit-scrollbar-thumb {
+    background: var(--surface2);
+    border-radius: 3px;
+}
+
+:root[data-theme='ferrari'] .select-options::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+:root[data-theme='ferrari'] .select-options::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+}

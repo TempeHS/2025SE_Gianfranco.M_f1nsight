@@ -48,7 +48,9 @@
                                 <td>{{ driver.position }}</td>
                                 <td>{{ driver.driver }}</td>
                                 <td>
-                                    <img class="constructor-icon" src="{{ url_for('static', filename='icons/' ~ driver.constructor ~ '/badge.png') }}" alt="{{ driver.constructor }} logo">
+                                    <img class="constructor-icon" src="{{ url_for('static', filename='icons/' ~ driver.constructor ~ '/badge.png') }}" 
+                                         alt="{{ driver.constructor }} logo" 
+                                         onerror="this.src='/static/images/F1_logo.png';">
                                     {{ driver.constructor }}
                                 </td>
                                 <td>{{ driver.points }}</td>
@@ -87,7 +89,9 @@
                             <tr>
                                 <td>{{ constructor.position }}</td>
                                 <td>
-                                    <img class="constructor-icon" src="{{ url_for('static', filename='icons/' ~ constructor.constructor ~ '/badge.png') }}" alt="{{ constructor.constructor }} logo">
+                                    <img class="constructor-icon" src="{{ url_for('static', filename='icons/' ~ constructor.constructor ~ '/badge.png') }}" 
+                                         alt="{{ constructor.constructor }} logo" 
+                                         onerror="this.src='/static/images/F1_logo.png';">
                                     {{ constructor.constructor }}
                                 </td>
                                 <td>{{ constructor.points }}</td>

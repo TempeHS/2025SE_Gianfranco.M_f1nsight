@@ -12,21 +12,39 @@
                 <div class="driver-selectors">
                     <!-- SELECTION -->
                     <div class="selector-container">
-                        <div class="input-field">
-                            <select id="driver1" class="driver-select">
-                                <option value="" disabled selected>choose first driver</option>
+                        <div class="custom-select">
+                            <div class="select-header">
+                                <span class="selected-driver">choose first driver</span>
+                                <span class="material-symbols-rounded">expand_more</span>
+                            </div>
+                            <div class="select-search">
+                                <input type="text" placeholder="search drivers..." class="driver-search">
+                            </div>
+                            <div class="select-options" id="driver1-options">
                                 {% for driver in drivers %}
-                                <option value="{{ driver }}">{{ driver.lower() }}</option>
+                                <div class="select-option" data-value="{{ driver }}">
+                                    {{ driver.lower() }}
+                                </div>
                                 {% endfor %}
-                            </select>
+                            </div>
+                            <input type="hidden" id="driver1" value="">
                         </div>
-                        <div class="input-field">
-                            <select id="driver2" class="driver-select">
-                                <option value="" disabled selected>choose second driver</option>
+                        <div class="custom-select">
+                            <div class="select-header">
+                                <span class="selected-driver">choose second driver</span>
+                                <span class="material-symbols-rounded">expand_more</span>
+                            </div>
+                            <div class="select-search">
+                                <input type="text" placeholder="search drivers..." class="driver-search">
+                            </div>
+                            <div class="select-options" id="driver2-options">
                                 {% for driver in drivers %}
-                                <option value="{{ driver }}">{{ driver.lower() }}</option>
+                                <div class="select-option" data-value="{{ driver }}">
+                                    {{ driver.lower() }}
+                                </div>
                                 {% endfor %}
-                            </select>
+                            </div>
+                            <input type="hidden" id="driver2" value="">
                         </div>
                     </div>
                 </div>
@@ -65,10 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
     Chart.defaults.color = style.getPropertyValue('--text');
     Chart.defaults.borderColor = style.getPropertyValue('--surface0');
     Chart.defaults.font.family = "'Fira Code', monospace";
-
-    // INITIALIZE MATERIALIZE SELECT
-    var elems = document.querySelectorAll('select');
-    M.FormSelect.init(elems);
 
     // INITIALIZE EMPTY CHART
     const ctx = document.getElementById('points-chart').getContext('2d');
@@ -208,9 +222,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 300); // 300MS DEBOUNCE DELAY
 
-    // ADD EVENT LISTENERS TO SELECT ELEMENTS
-    document.getElementById('driver1').addEventListener('change', updateChart);
-    document.getElementById('driver2').addEventListener('change', updateChart);
+    // DRIVER SEARCH FUNCTIONALITY
+    function initDriverSearch(driverSearchClass, driverOptionsId, driverSelectedId) {
+        const searchInput = document.querySelector(`.${driverSearchClass}`);
+        const optionsContainer = document.getElementById(driverOptionsId);
+        const selectedDriver = document.getElementById(driverSelectedId);
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const options = optionsContainer.querySelectorAll('.select-option');
+
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                option.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        optionsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('select-option')) {
+                const driverName = e.target.getAttribute('data-value');
+                selectedDriver.value = driverName;
+
+                // UPDATE SELECTED DRIVER TEXT
+                const selectedDriverText = document.querySelector(`.selected-driver`);
+                selectedDriverText.textContent = driverName.toLowerCase();
+
+                // CLEAR SEARCH INPUT AND HIDE OPTIONS
+                searchInput.value = '';
+                optionsContainer.querySelectorAll('.select-option').forEach(option => {
+                    option.style.display = 'block';
+                });
+
+                updateChart();
+            }
+        });
+    }
+
+    // INITIALIZE DRIVER SEARCH FOR BOTH SELECTORS
+    initDriverSearch('driver-search', 'driver1-options', 'driver1');
+    initDriverSearch('driver-search', 'driver2-options', 'driver2');
 });
 </script>
 {% endblock %}

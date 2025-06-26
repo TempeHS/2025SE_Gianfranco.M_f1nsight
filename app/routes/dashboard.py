@@ -94,31 +94,85 @@ def news():
         sources = request.args.get('sources', None)
         page = request.args.get('page', '1')
         page_size = int(request.args.get('page_size', 30))
-        
+
+        # FETCH NEWS DATA
         news_data = news_service.get_f1_news(sources=sources, page_size=page_size, page=page)
-        print(f"News data status: {news_data.get('status')} for page {page}") 
-        print(f"News data message: {news_data.get('message')}")
-        print(f"Number of articles: {len(news_data.get('articles', []))}")  
-        
+
+        # FETCH AVAILABLE SOURCES
         sources_data = news_service.get_available_sources()
-        print(f"Sources data status: {sources_data.get('status')}") 
-        
+
         if news_data.get('status') == 'error':
             flash(f"Error fetching news: {news_data.get('message')}", 'error')
             return render_template('dashboard/news.html', news=[], sources=[], selected_sources=[])
-            
+
         if sources_data.get('status') == 'error':
             flash(f"Error fetching sources: {sources_data.get('message')}", 'error')
-            return render_template('dashboard/news.html', 
-                                news=news_data.get('articles', []), 
-                                sources=[], 
-                                selected_sources=[])
-        
+            return render_template('dashboard/news.html', news=news_data.get('articles', []), sources=[], selected_sources=[])
+
         return render_template('dashboard/news.html',
-                             news=news_data.get('articles', []),
-                             sources=sources_data.get('sources', []),
-                             selected_sources=sources.split(',') if sources else [])
+                               news=news_data.get('articles', []),
+                               sources=sources_data.get('sources', []),
+                               selected_sources=sources.split(',') if sources else [])
     except Exception as e:
         print(f"Error in news route: {str(e)}")
         flash(f"Error fetching news: {str(e)}", 'error')
         return render_template('dashboard/news.html', news=[], sources=[], selected_sources=[])
+
+@bp.route('/races')
+@login_required
+def races():
+    # Get parameters from request
+    from app.services.jolpica import get_available_years, get_races_by_season, get_race_results
+    
+    selected_year = request.args.get('year', datetime.now().year)
+    selected_round = request.args.get('round', None)
+    
+    # Get available seasons
+    available_seasons = get_available_years()
+    
+    # Get races for the selected season
+    races = get_races_by_season(selected_year)
+    
+    # Get detailed results if a race is selected
+    race_results = None
+    prev_race = None
+    next_race = None
+    
+    if selected_round:
+        race_results = get_race_results(selected_year, selected_round)
+        
+        # Get previous and next race information
+        try:
+            # Convert selected_round to int for comparison
+            selected_round_int = int(selected_round)
+            
+            # Sort races by round number
+            sorted_races = sorted(races, key=lambda x: int(x['round']))
+            
+            # Get current race index
+            current_race_index = None
+            for i, race in enumerate(sorted_races):
+                if int(race['round']) == selected_round_int:
+                    current_race_index = i
+                    break
+            
+            # If we found the current race, get prev/next
+            if current_race_index is not None:
+                # Add previous race if not the first race
+                if current_race_index > 0:
+                    prev_race = sorted_races[current_race_index - 1]
+                
+                # Add next race if not the last race
+                if current_race_index < len(sorted_races) - 1:
+                    next_race = sorted_races[current_race_index + 1]
+        except (ValueError, TypeError) as e:
+            print(f"Error determining next/previous race: {e}")
+    
+    return render_template('dashboard/races.html',
+                          available_seasons=available_seasons,
+                          selected_year=selected_year,
+                          races=races,
+                          selected_round=selected_round,
+                          race_results=race_results,
+                          prev_race=prev_race,
+                          next_race=next_race)

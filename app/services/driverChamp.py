@@ -9,10 +9,10 @@ class driverStandings:
     # SERVICE FOR FETCHING F1 DATA FROM JOLPICA-F1 API
     """
     BASE_URL = "https://api.jolpi.ca/ergast/f1"
-    _cache = {}  # In-memory cache for API responses
+    _cache = {}  # DRIVER STANDINGS CACHE
 
     @staticmethod
-    @lru_cache(maxsize=32)  # Cache up to 32 different year combinations
+    @lru_cache(maxsize=32)  # CACHE DRIVER STANDINGS
     def get_driver_standings(year=None):
         """
         # FETCH DRIVER STANDINGS
